@@ -14,7 +14,7 @@
 }
 
 .heading {
-  font-size: clamp(2rem, 3vw, 2.75rem);
+  font-size: var(--text-h1);
   font-weight: 800;
   margin-bottom: clamp(24px, 3vw, 36px);
   color: var(--text-main);
@@ -28,5 +28,5 @@
   border-radius: var(--radius-lg);
   border: 1px dashed var(--border);
   color: var(--text-muted);
-  font-size: 1rem;
+  font-size: var(--text-body);
 }

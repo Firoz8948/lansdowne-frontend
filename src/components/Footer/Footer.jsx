@@ -6,7 +6,7 @@ export default function Footer() {
     <footer className={styles.footer}>
       <div className={styles.inner}>
         <div className={styles.brandCol}>
-          <div className={styles.brandName}>Lansdowne</div>
+          <h2 className={styles.brandName}>Lansdowne</h2>
           <p className={styles.brandDesc}>
             Curated premium products built for quality, elegance, and distinction.
           </p>
