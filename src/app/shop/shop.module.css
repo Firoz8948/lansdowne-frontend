@@ -1,123 +1,41 @@
-.page {
-  padding-top: 1.5rem;
-}
-
-.shopContainer {
-  max-width: 1540px;
-  padding-left: clamp(1rem, 2vw, 2rem);
-  padding-right: clamp(1rem, 2vw, 2rem);
-}
-
-.headingRow {
+.container {
+  min-height: 100vh;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-bottom: 1.25rem;
+  flex-direction: column;
+  width: 100%;
 }
 
-.heading {
-  font-size: clamp(1.45rem, 2.4vw, 1.9rem);
-  margin: 0;
-  text-align: left;
-  color: var(--primary);
+.main {
+  flex: 1;
+  max-width: var(--container-2xl);
+  margin: 0 auto;
+  padding: clamp(36px, 5vw, 64px) var(--gutter-inline);
+  width: 100%;
 }
 
-.desktopSort {
-  flex-shrink: 0;
+.headerSection {
+  margin-bottom: clamp(28px, 4vw, 44px);
 }
 
-.shopLayout {
-  display: grid;
-  grid-template-columns: 280px minmax(0, 1fr);
-  align-items: start;
-  gap: clamp(1.5rem, 3vw, 2.75rem);
+.title {
+  font-size: clamp(2rem, 3vw, 2.75rem);
+  font-weight: 800;
+  color: var(--text-main);
+  letter-spacing: -0.03em;
+  margin-bottom: 8px;
 }
 
-.desktopSidebar {
-  position: sticky;
-  top: 84px;
-  max-height: calc(100vh - 104px);
-  overflow-x: hidden;
-  overflow-y: auto;
-  align-self: start;
-  scrollbar-gutter: stable;
-  background: var(--background);
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow-sm);
+.subtitle {
+  font-size: clamp(0.95rem, 1.1vw, 1.1rem);
+  color: var(--text-muted);
 }
 
-.filterHeading {
-  padding: 1.15rem 1.1rem 1rem;
-  background: var(--cream);
-  border-bottom: 1px solid var(--border);
-}
-
-.filterHeading span {
-  display: block;
-  margin-bottom: 0.2rem;
-  color: var(--primary);
-  font-size: 0.68rem;
-  font-weight: var(--font-bold);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.filterHeading h2 {
-  margin: 0;
-  color: var(--heading);
-  font-family: var(--font-heading);
-  font-size: 1.65rem;
-  line-height: 1;
-}
-
-.productArea {
-  min-width: 0;
-}
-
-.mobileBrowse,
-.mobileSort {
-  display: none;
-}
-
-.loadMoreMarker {
-  min-height: 76px;
-  display: grid;
-  place-items: center;
-  color: var(--text-muted-color);
-  font-size: var(--text-sm);
+.placeholderCard {
+  padding: clamp(60px, 8vw, 100px) 20px;
   text-align: center;
-}
-
-@media (max-width: 860px) {
-  .shopLayout {
-    display: block;
-  }
-
-  .desktopSidebar,
-  .desktopSort {
-    display: none;
-  }
-
-  .headingRow {
-    margin-bottom: 1rem;
-    justify-content: center;
-  }
-
-  .heading {
-    text-align: center;
-  }
-
-  .mobileBrowse,
-  .mobileSort {
-    display: block;
-  }
-
-  .mobileBrowse {
-    margin-bottom: 1.25rem;
-  }
-
-  .loadMoreMarker {
-    min-height: 64px;
-  }
+  background-color: var(--surface-subtle);
+  border-radius: var(--radius-lg);
+  border: 1px dashed var(--border);
+  color: var(--text-muted);
+  font-size: 1rem;
 }

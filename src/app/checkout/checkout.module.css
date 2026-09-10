@@ -1,64 +1,32 @@
-.page {
-  color: var(--text);
-}
-
-.heading {
-  font-size: 1.8rem;
-  margin-bottom: 0.5rem;
-  color: var(--text);
-}
-
-.subtitle {
-  color: var(--text-muted);
-  margin-bottom: 1.5rem;
-}
-
-.layout {
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
   width: 100%;
 }
 
-.flow {
-  display: grid;
-  grid-template-columns: 1fr 360px;
-  gap: 1.5rem 2rem;
-  align-items: start;
+.main {
+  flex: 1;
+  max-width: var(--container-lg);
+  margin: 0 auto;
+  padding: clamp(36px, 5vw, 64px) var(--gutter-inline);
+  width: 100%;
 }
 
-.step[data-step="shipping"] {
-  grid-column: 1;
-  grid-row: 1;
+.heading {
+  font-size: clamp(2rem, 3vw, 2.75rem);
+  font-weight: 800;
+  margin-bottom: clamp(24px, 3vw, 36px);
+  color: var(--text-main);
+  letter-spacing: -0.02em;
 }
 
-.step[data-step="payment"] {
-  grid-column: 1;
-  grid-row: 2;
-}
-
-.summaryStep {
-  grid-column: 2;
-  grid-row: 1 / span 2;
-  position: sticky;
-  top: calc(var(--header-height) + 1rem);
-}
-
-@media (max-width: 860px) {
-  .flow {
-    grid-template-columns: 1fr;
-  }
-
-  .step[data-step="shipping"] {
-    grid-column: 1;
-    grid-row: 1;
-  }
-
-  .step[data-step="payment"] {
-    grid-column: 1;
-    grid-row: 2;
-  }
-
-  .summaryStep {
-    grid-column: 1;
-    grid-row: 3;
-    position: static;
-  }
+.card {
+  padding: clamp(48px, 6vw, 80px) 20px;
+  text-align: center;
+  background-color: var(--surface-subtle);
+  border-radius: var(--radius-lg);
+  border: 1px dashed var(--border);
+  color: var(--text-muted);
+  font-size: 1rem;
 }

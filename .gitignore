@@ -1,45 +1,44 @@
-# Dependencies
-node_modules/
-.pnp
+# dependencies
+/node_modules
+/.pnp
 .pnp.js
 
-# Next.js build
-.next/
-out/
-build/
-dist/
+# testing
+/coverage
 
-# Env / secrets — never commit real values
-.env
-.env.*
-!.env.example
-!.env.local.example
+# next.js
+/.next/
+/out/
 
-# Debug / logs
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
+# production
+/build
 
-# Testing / coverage
-coverage/
-.nyc_output/
-
-# OS / editor
+# misc & OS
 .DS_Store
-Thumbs.db
 *.pem
-.idea/
+Thumbs.db
+
+# IDE & editors
 .vscode/
+.idea/
 *.swp
 *.swo
 
-# Vercel
-.vercel
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
-# TypeScript build info
+# Environment files — never commit secrets
+.env
+.env.*
+.env*.local
+!.env.example
+!.env*.example
+!.env.local.example
+
+# typescript
 *.tsbuildinfo
-
-# Misc
-*.log
-.next-env.d.ts.bak
+next-env.d.ts

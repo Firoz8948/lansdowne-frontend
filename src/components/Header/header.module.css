@@ -1,0 +1,336 @@
+.header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  background: #ffffff;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  width: 100%;
+}
+
+.inner {
+  max-width: var(--container-2xl);
+  margin: 0 auto;
+  height: 84px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--gutter-inline);
+}
+
+/* ================= DESKTOP 3-SECTION GRID ================= */
+.leftSection {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.centerSection {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  padding: 0 clamp(16px, 1.8vw, 24px);
+}
+
+.rightSection {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+/* ================= LOGOS ================= */
+.textLogoLink {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.textLogoImg {
+  width: 136px;
+  height: 46px;
+  object-fit: contain;
+  filter: brightness(0);
+}
+
+.mainLogoLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  padding: 6px;
+  border-radius: 0;
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+}
+
+.mainLogoLink:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+}
+
+.mainLogoImg {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  background: #ffffff;
+}
+
+/* ================= DESKTOP NAVIGATION ================= */
+.desktopNav {
+  display: flex;
+  align-items: center;
+  gap: clamp(24px, 2.2vw, 36px);
+}
+
+.leftNav {
+  flex: 1;
+  justify-content: flex-end;
+}
+
+.rightNav {
+  flex: 1;
+  justify-content: flex-start;
+}
+
+.navLink {
+  font-family: var(--font-heading), 'Arapey', Georgia, serif;
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: #0f172a;
+  transition: color var(--transition-fast);
+  padding: 6px 2px;
+  white-space: nowrap;
+}
+
+.navLink:hover {
+  color: #5c3d2e;
+}
+
+.navLinkActive {
+  color: #5c3d2e;
+  font-weight: 700;
+}
+
+/* ================= ICON ACTIONS (Cart & Profile) ================= */
+.iconActions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-left: auto;
+}
+
+.iconBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #0f172a;
+  padding: 6px;
+  transition: color var(--transition-fast), transform var(--transition-fast);
+}
+
+.iconBtn:hover {
+  color: #5c3d2e;
+  transform: translateY(-1px);
+}
+
+/* ================= MOBILE HAMBURGER BUTTON ================= */
+.hamburgerBtn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+  background: none;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  cursor: pointer;
+  color: #0f172a;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.hamburgerBtn:hover,
+.hamburgerBtn:focus,
+.hamburgerBtn:active {
+  background: none;
+  box-shadow: none;
+  outline: none;
+}
+
+/* ================= MOBILE DRAWER OVERLAY ================= */
+.drawerOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 200;
+  animation: fadeIn 0.25s ease;
+  display: flex;
+}
+
+.drawerContent {
+  width: 85%;
+  max-width: 360px;
+  height: 100%;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-lg);
+  animation: slideInLeft 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow-y: auto;
+}
+
+.drawerHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.drawerLogoLink {
+  display: inline-flex;
+  align-items: center;
+}
+
+.drawerCloseBtn {
+  padding: 6px;
+  color: var(--text-muted);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.drawerCloseBtn:hover {
+  color: var(--text-main);
+  background: var(--surface-subtle);
+}
+
+.drawerNav {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.drawerNavLink {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  color: var(--text-main);
+  font-size: 1.05rem;
+  font-weight: 600;
+  transition: all var(--transition-fast);
+}
+
+.drawerNavLink:hover {
+  background-color: var(--surface-subtle);
+}
+
+.drawerNavLinkActive {
+  background-color: #f0ebe6;
+  color: #4a2c17;
+}
+
+.drawerLinkArrow {
+  color: var(--text-subtle);
+}
+
+.drawerDivider {
+  height: 1px;
+  background-color: var(--border);
+  margin: 16px 0;
+}
+
+.drawerSecondaryLink {
+  padding: 10px 14px;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: color var(--transition-fast);
+}
+
+.drawerSecondaryLink:hover {
+  color: var(--text-main);
+}
+
+.drawerAdminBtn {
+  margin-top: 12px;
+  background-color: #0f172a;
+  color: #ffffff;
+  text-align: center;
+  padding: 12px;
+  border-radius: 0;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.drawerFooter {
+  padding: 20px 24px;
+  border-top: 1px solid var(--border);
+  color: var(--text-subtle);
+  font-size: 0.8rem;
+  text-align: center;
+}
+
+/* ================= ANIMATIONS ================= */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideInLeft {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+
+/* ================= RESPONSIVE BREAKPOINTS ================= */
+@media (max-width: 1024px) {
+  .header {
+    background: transparent;
+    border-bottom: none;
+  }
+  .inner {
+    height: 70px;
+  }
+  .desktopNav {
+    display: none;
+  }
+  .hamburgerBtn {
+    display: flex;
+    color: #ffffff;
+    background: none;
+    border: none;
+    padding: 0;
+    box-shadow: none;
+  }
+  .hamburgerBtn:hover,
+  .hamburgerBtn:focus,
+  .hamburgerBtn:active {
+    background: none;
+    box-shadow: none;
+  }
+  .textLogoLink {
+    display: none;
+  }
+  .mainLogoLink {
+    background: transparent;
+    box-shadow: none;
+  }
+  .mainLogoLink:hover {
+    box-shadow: none;
+  }
+  .mainLogoImg {
+    width: 46px;
+    height: 46px;
+    background: transparent;
+  }
+  .iconBtn {
+    color: #ffffff;
+  }
+}

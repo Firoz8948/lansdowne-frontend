@@ -1,114 +1,77 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-
-import { useAdminAuth } from "@/context/AdminAuthContext";
-import Logo from "@/components/Logo/Logo";
-import styles from "./login.module.css";
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
+import styles from './login.module.css';
+import authService from '@/lib/services/auth';
 
 export default function AdminLoginPage() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [showPass, setShowPass] = useState(false);
-  const { login } = useAdminAuth();
   const router = useRouter();
+  const [username, setUsername] = useState('admin');
+  const [password, setPassword] = useState('admin');
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
-    if (!username.trim() || !password) {
-      setError("Please enter username and password.");
+    if (!username || !password) {
+      toast.error('Please enter username and password');
       return;
     }
-    setLoading(true);
+
     try {
-      await login(username.trim(), password);
-      router.replace("/admin/dashboard");
+      setLoading(true);
+      await authService.adminLogin(username, password);
+      toast.success('Admin login successful!');
+      router.push('/admin/dashboard');
     } catch (err) {
-      setError(
-        err?.response?.data?.detail || "Invalid credentials. Please try again."
-      );
+      toast.error(err.message || 'Invalid admin credentials');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className={styles.page}>
-      <div className={styles.bg} />
-
+    <div className={styles.container}>
       <div className={styles.card}>
-        <div className={styles.brand}>
-          <Logo size={120} className={styles.brandLogo} priority />
-          <p className={styles.brandSub}>Admin Portal</p>
+        <div className={styles.header}>
+          <h1 className={styles.brand}>Lansdowne Admin</h1>
+          <p className={styles.subtitle}>Sign in to manage your store</p>
         </div>
 
-        <form className={styles.form} onSubmit={handleSubmit} noValidate>
-          <h2 className={styles.title}>Welcome back</h2>
-          <p className={styles.subtitle}>Sign in to manage your store</p>
-
-          {error && (
-            <div className={styles.error}>
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={2}
-                width={16}
-                height={16}
-              >
-                <circle cx="12" cy="12" r="10" />
-                <path d="M12 8v4M12 16h.01" />
-              </svg>
-              {error}
-            </div>
-          )}
-
+        <form onSubmit={handleSubmit} className={styles.form}>
           <div className={styles.field}>
-            <label className={styles.label}>Username</label>
+            <label className={styles.label}>Username or Email</label>
             <input
-              className={styles.input}
               type="text"
-              placeholder="Enter username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              autoComplete="username"
-              autoFocus
+              placeholder="admin"
+              className={styles.input}
+              required
             />
           </div>
 
           <div className={styles.field}>
             <label className={styles.label}>Password</label>
-            <div className={styles.passWrap}>
-              <input
-                className={styles.input}
-                type={showPass ? "text" : "password"}
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                autoComplete="current-password"
-              />
-              <button
-                type="button"
-                className={styles.eyeBtn}
-                onClick={() => setShowPass(!showPass)}
-              >
-                {showPass ? "🙈" : "👁️"}
-              </button>
-            </div>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••"
+              className={styles.input}
+              required
+            />
           </div>
 
-          <button type="submit" className={styles.submitBtn} disabled={loading}>
-            {loading ? <span className={styles.btnSpinner} /> : "Sign In"}
+          <button type="submit" disabled={loading} className={styles.button}>
+            {loading ? 'Authenticating...' : 'Sign In'}
           </button>
         </form>
 
-        <p className={styles.footer}>
-          ChaklaDekho · Kitchen Essentials for Every Home
-        </p>
+        <div className={styles.hint}>
+          Default credentials: <strong>admin</strong> / <strong>admin</strong>
+        </div>
       </div>
     </div>
   );
