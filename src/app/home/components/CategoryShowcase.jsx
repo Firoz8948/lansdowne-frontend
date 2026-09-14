@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import productService from '@/lib/services/products';
+import ShopNowButton from '@/components/ShopNowButton';
 import styles from '../home.module.css';
 
 const resolveImageUrl = (url) => {
@@ -16,6 +17,9 @@ const resolveImageUrl = (url) => {
 export default function CategoryShowcase() {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [activeSlide, setActiveSlide] = useState(0);
+  const [touchStartX, setTouchStartX] = useState(null);
+  const [touchEndX, setTouchEndX] = useState(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -40,70 +44,153 @@ export default function CategoryShowcase() {
     };
   }, []);
 
+  const minSwipeDistance = 40;
+
+  const onTouchStart = (e) => {
+    setTouchEndX(null);
+    setTouchStartX(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e) => {
+    setTouchEndX(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (touchStartX === null || touchEndX === null) return;
+    const distance = touchStartX - touchEndX;
+    if (distance > minSwipeDistance) {
+      // Swiped left: 1st goes left, 2nd comes right to left, etc.
+      setActiveSlide((prev) => (prev + 1) % categories.length);
+    } else if (distance < -minSwipeDistance) {
+      // Swiped right: goes previous
+      setActiveSlide((prev) => (prev - 1 + categories.length) % categories.length);
+    }
+  };
+
+  const handlePrev = (e) => {
+    e.stopPropagation();
+    setActiveSlide((prev) => (prev - 1 + categories.length) % categories.length);
+  };
+
+  const handleNext = (e) => {
+    e.stopPropagation();
+    setActiveSlide((prev) => (prev + 1) % categories.length);
+  };
+
   return (
-    <section className={styles.section}>
+    <section className={`${styles.section} ${styles.categorySection}`}>
       <div className={styles.sectionHeader}>
-        <div className={styles.sectionTitleGroup}>
-          <span className={styles.sectionTag}>Explore Categories</span>
-          <h2 className={styles.sectionTitle}>Curated Collections</h2>
+        <h2 className={styles.sectionTitle}>CURATED COLLECTIONS</h2>
+        <div className={styles.sectionTitleRow}>
+          <p className={styles.sectionSubtitle}>Shop by category</p>
+          <Link href="/shop" className={styles.sectionLink}>
+            View All <ArrowRight size={16} />
+          </Link>
         </div>
-        <Link href="/shop" className={styles.sectionLink}>
-          View All <ArrowRight size={16} />
-        </Link>
       </div>
 
-      <div className={styles.categoryGrid}>
-        {loading ? (
-          // Skeleton loaders while fetching from db
-          [1, 2, 3].map((n) => (
-            <div
-              key={n}
-              className={`${styles.categoryCard} ${styles.categorySkeleton}`}
-              style={{ minHeight: 280 }}
-            />
-          ))
-        ) : categories.length > 0 ? (
-          categories.map((cat) => {
-            const resolvedImg = resolveImageUrl(cat.image_url);
-            const badgeLabel =
-              cat.product_count > 0
-                ? `${cat.product_count} ${cat.product_count === 1 ? 'Piece' : 'Pieces'}`
-                : 'Collection';
+      <div
+        className={styles.categoryContainer}
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
+      >
+        <div
+          className={styles.categoryGrid}
+          style={{ '--active-slide': activeSlide }}
+        >
+          {loading ? (
+            // Skeleton loaders while fetching from db
+            [1, 2, 3].map((n) => (
+              <div key={n} className={styles.categorySlide}>
+                <div
+                  className={`${styles.categoryCard} ${styles.categorySkeleton}`}
+                />
+              </div>
+            ))
+          ) : categories.length > 0 ? (
+            categories.map((cat, idx) => {
+              const resolvedImg = resolveImageUrl(cat.image_url);
 
-            return (
-              <Link
-                key={cat.id}
-                href={`/shop?category=${encodeURIComponent(cat.slug)}`}
-                className={styles.categoryCard}
-              >
-                {resolvedImg && (
-                  <>
-                    <img
-                      src={resolvedImg}
-                      alt={cat.name}
-                      className={styles.categoryCardImg}
-                    />
-                    <div className={styles.categoryCardOverlay} />
-                  </>
-                )}
+              return (
+                <div
+                  key={cat.id}
+                  className={`${styles.categorySlide} ${activeSlide === idx ? styles.activeSlide : ''}`}
+                >
+                  <Link
+                    href={`/shop?category=${encodeURIComponent(cat.slug)}`}
+                    className={styles.categoryCard}
+                  >
+                    {resolvedImg && (
+                      <>
+                        <img
+                          src={resolvedImg}
+                          alt={cat.name}
+                          className={styles.categoryCardImg}
+                        />
+                        <div className={styles.categoryCardOverlay} />
+                      </>
+                    )}
 
-                <span className={styles.categoryBadge}>{badgeLabel}</span>
+                    <div className={styles.categoryCardTopContent}>
+                      <div className={styles.categoryTopLabel}>
+                        <span className={styles.categoryTopLabelLine} />
+                        <span className={styles.categoryTopLabelText}>Premium</span>
+                      </div>
+                      <h3 className={styles.categoryName}>{cat.name}</h3>
+                      {cat.description && (
+                        <p className={styles.categoryDesc}>{cat.description}</p>
+                      )}
+                    </div>
 
-                <div className={styles.categoryCardContent}>
-                  <h3 className={styles.categoryName}>{cat.name}</h3>
-                  <span className={styles.categoryAction}>
-                    Shop Now <ArrowRight size={14} />
-                  </span>
+                    <div className={styles.categoryActionWrapper}>
+                      <ShopNowButton as="span" size="sm" />
+                    </div>
+                  </Link>
                 </div>
-              </Link>
-            );
-          })
-        ) : (
-          <div className={styles.categoryEmpty}>
-            <p>No categories published yet. Add categories from the Admin Portal.</p>
-          </div>
-        )}
+              );
+            })
+          ) : (
+            <div className={styles.categoryEmpty}>
+              <p>No categories published yet. Add categories from the Admin Portal.</p>
+            </div>
+          )}
+        </div>
       </div>
+
+      {!loading && categories.length > 1 && (
+        <div className={styles.categoryPagination}>
+          <button
+            type="button"
+            className={styles.paginationArrowBtn}
+            onClick={handlePrev}
+            aria-label="Previous Category"
+          >
+            <ChevronLeft size={18} />
+          </button>
+
+          <div className={styles.categoryCarouselDots}>
+            {categories.map((cat, idx) => (
+              <button
+                key={cat.id || idx}
+                type="button"
+                className={`${styles.categoryCarouselDot} ${activeSlide === idx ? styles.activeDot : ''}`}
+                onClick={() => setActiveSlide(idx)}
+                aria-label={`Go to category ${idx + 1}`}
+              />
+            ))}
+          </div>
+
+          <button
+            type="button"
+            className={styles.paginationArrowBtn}
+            onClick={handleNext}
+            aria-label="Next Category"
+          >
+            <ChevronRight size={18} />
+          </button>
+        </div>
+      )}
     </section>
   );
 }
