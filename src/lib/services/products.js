@@ -18,7 +18,7 @@ export const productService = {
   },
 
   async getCategories() {
-    return apiClient.get('/categories');
+    return apiClient.get('/categories/');
   },
 
   async getVideoProducts() {

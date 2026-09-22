@@ -105,7 +105,7 @@ export const adminService = {
   },
 
   async createCategory(categoryData) {
-    return apiClient.post('/categories', categoryData);
+    return apiClient.post('/categories/', categoryData);
   },
 
   async updateCategory(id, categoryData) {
