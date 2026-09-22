@@ -5,20 +5,58 @@
   width: 100%;
 }
 
-.heading {
-  font-size: clamp(1.5rem, 2vw, 1.85rem);
-  font-weight: 800;
-  color: var(--text-main);
-  letter-spacing: -0.02em;
+.clickableRow {
+  cursor: pointer;
 }
 
-.card {
-  background: #ffffff;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  padding: clamp(32px, 5vw, 56px) 20px;
-  text-align: center;
-  color: var(--text-muted);
-  box-shadow: var(--shadow-sm);
-  font-size: 1rem;
+.clickableRow:hover td {
+  background: #f8fafc;
+}
+
+.muted {
+  font-size: 0.8rem;
+  color: #64748b;
+  margin-top: 2px;
+}
+
+.detailModal {
+  max-width: 720px;
+  width: min(720px, 94vw);
+}
+
+.detailGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.detailLabel {
+  margin: 0 0 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.itemsList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.itemRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 640px) {
+  .detailGrid {
+    grid-template-columns: 1fr;
+  }
 }

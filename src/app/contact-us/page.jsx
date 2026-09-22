@@ -1,59 +1,135 @@
 import styles from './contact.module.css';
 import Header from '@/components/Header/Header';
 import Footer from '@/components/Footer/Footer';
+import PageHeroBanner from '@/components/PageHeroBanner/PageHeroBanner';
+import { Mail, Phone, Clock, MapPin } from 'lucide-react';
 
 export const metadata = {
   title: 'Contact Us | Lansdowne',
-  description: 'Get in touch with our team',
+  description:
+    'Get in touch with the Lansdowne team. Reach us via email, phone, or send us a message directly.',
 };
+
+const contactInfo = [
+  {
+    icon: Mail,
+    label: 'Email Support',
+    value: 'support@lansdowne.in',
+    extra: 'We typically respond within 24 hours',
+  },
+  {
+    icon: Phone,
+    label: 'Customer Helpline',
+    value: '+91 98765 43210',
+    extra: 'Available during business hours',
+  },
+  {
+    icon: Clock,
+    label: 'Operating Hours',
+    value: 'Mon – Sat: 10:00 AM – 7:00 PM IST',
+    extra: 'Closed on Sundays and national holidays',
+  },
+  {
+    icon: MapPin,
+    label: 'Registered Office',
+    value: 'Lansdowne Lifestyle Pvt. Ltd.',
+    extra: 'New Delhi, India — 110001',
+  },
+];
 
 export default function ContactUsPage() {
   return (
     <div className={styles.container}>
       <Header />
-      <main className={styles.main}>
-        <h1 className={styles.title}>Contact Us</h1>
-        <p className={styles.subtitle}>
-          We’d love to hear from you. Send us a message or reach out via our contact channels.
-        </p>
+      <PageHeroBanner
+        title="Contact Us"
+        subtitle="We'd love to hear from you. Send us a message or reach out via our support channels."
+      />
 
-        <div className={styles.grid}>
-          <div className={styles.infoCard}>
-            <div className={styles.infoItem}>
-              <span className={styles.infoLabel}>Email Support</span>
-              <span className={styles.infoValue}>support@lansdowne.com</span>
-            </div>
-            <div className={styles.infoItem}>
-              <span className={styles.infoLabel}>Customer Helpline</span>
-              <span className={styles.infoValue}>+91 98765 43210</span>
-            </div>
-            <div className={styles.infoItem}>
-              <span className={styles.infoLabel}>Operating Hours</span>
-              <span className={styles.infoValue}>Mon - Sat: 9:00 AM - 6:00 PM IST</span>
-            </div>
+      <main className={styles.main}>
+        {/* ── Contact Info Cards ── */}
+        <section className={styles.infoSection}>
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>GET IN TOUCH</h2>
+            <p className={styles.sectionSubtitle}>Ways to Reach Us</p>
+          </div>
+          <div className={styles.infoGrid}>
+            {contactInfo.map((item, idx) => {
+              const IconComp = item.icon;
+              return (
+                <div key={idx} className={styles.infoCard}>
+                  <div className={styles.infoIcon}>
+                    <IconComp size={22} strokeWidth={1.5} />
+                  </div>
+                  <span className={styles.infoLabel}>{item.label}</span>
+                  <span className={styles.infoValue}>{item.value}</span>
+                  <span className={styles.infoExtra}>{item.extra}</span>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* ── Contact Form ── */}
+        <section className={styles.formSection}>
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>SEND US A MESSAGE</h2>
+            <p className={styles.sectionSubtitle}>Let Us Know</p>
           </div>
 
           <div className={styles.formCard}>
             <form className={styles.form}>
-              <div className={styles.inputGroup}>
-                <label className={styles.label}>Your Name</label>
-                <input type="text" placeholder="Enter your full name" className={styles.input} />
+              <div className={styles.formRow}>
+                <div className={styles.inputGroup}>
+                  <label className={styles.label}>Full Name</label>
+                  <input
+                    type="text"
+                    placeholder="Enter your full name"
+                    className={styles.input}
+                  />
+                </div>
+                <div className={styles.inputGroup}>
+                  <label className={styles.label}>Email Address</label>
+                  <input
+                    type="email"
+                    placeholder="you@example.com"
+                    className={styles.input}
+                  />
+                </div>
               </div>
-              <div className={styles.inputGroup}>
-                <label className={styles.label}>Phone / Email</label>
-                <input type="text" placeholder="Your contact details" className={styles.input} />
+              <div className={styles.formRow}>
+                <div className={styles.inputGroup}>
+                  <label className={styles.label}>Phone Number</label>
+                  <input
+                    type="tel"
+                    placeholder="+91 XXXXX XXXXX"
+                    className={styles.input}
+                  />
+                </div>
+                <div className={styles.inputGroup}>
+                  <label className={styles.label}>Subject</label>
+                  <input
+                    type="text"
+                    placeholder="Order enquiry, feedback, etc."
+                    className={styles.input}
+                  />
+                </div>
               </div>
               <div className={styles.inputGroup}>
                 <label className={styles.label}>Message</label>
-                <textarea placeholder="How can we help you?" className={styles.textarea} />
+                <textarea
+                  placeholder="Tell us how we can help you…"
+                  className={styles.textarea}
+                />
               </div>
               <button type="button" className={styles.submitBtn}>
                 Send Message
               </button>
             </form>
           </div>
-        </div>
+        </section>
       </main>
+
       <Footer />
     </div>
   );

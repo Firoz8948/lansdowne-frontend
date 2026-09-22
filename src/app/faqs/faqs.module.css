@@ -13,50 +13,94 @@
   width: 100%;
 }
 
-.title {
-  font-size: var(--text-h1);
-  font-weight: 800;
+/* ── FAQ Group ── */
+.faqGroup {
+  margin-bottom: clamp(36px, 5vw, 52px);
+}
+
+.faqGroup:last-child {
+  margin-bottom: 0;
+}
+
+.groupTitle {
+  font-family: var(--font-family-heading);
+  font-size: var(--text-h2);
+  font-weight: 400;
   color: var(--text-main);
-  letter-spacing: -0.02em;
-  margin-bottom: 12px;
-  text-align: center;
+  letter-spacing: -0.01em;
+  margin-bottom: clamp(16px, 2vw, 24px);
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
 }
 
-.subtitle {
-  font-size: var(--text-body);
-  color: var(--text-muted);
-  text-align: center;
-  margin-bottom: clamp(32px, 5vw, 48px);
-}
-
+/* ── FAQ List ── */
 .faqList {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 8px;
 }
 
 .faqItem {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
-  padding: clamp(20px, 2.5vw, 28px);
-  transition: all var(--transition-normal);
+  overflow: hidden;
+  transition: border-color var(--transition-normal), box-shadow var(--transition-normal);
 }
 
 .faqItem:hover {
   border-color: var(--border-hover);
+}
+
+.faqItemOpen {
+  border-color: var(--border-hover);
   box-shadow: var(--shadow-sm);
 }
 
-.question {
+/* ── Question Button ── */
+.faqQuestion {
+  width: 100%;
+  padding: clamp(16px, 2vw, 20px) clamp(18px, 2.5vw, 24px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: none;
+  border: none;
   font-size: var(--text-h3);
-  font-weight: 700;
+  font-weight: 600;
   color: var(--text-main);
-  margin-bottom: 8px;
+  text-align: left;
+  cursor: pointer;
+  font-family: var(--font-family-sans);
+  line-height: 1.4;
 }
 
-.answer {
+.faqChevron {
+  flex-shrink: 0;
+  color: var(--text-muted);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.faqChevronOpen {
+  transform: rotate(180deg);
+  color: var(--accent);
+}
+
+/* ── Answer ── */
+.faqAnswer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.faqAnswerOpen {
+  max-height: 400px;
+}
+
+.faqAnswerText {
+  padding: 0 clamp(18px, 2.5vw, 24px) clamp(16px, 2vw, 22px);
   color: var(--text-muted);
   font-size: var(--text-body);
-  line-height: 1.65;
+  line-height: 1.7;
 }

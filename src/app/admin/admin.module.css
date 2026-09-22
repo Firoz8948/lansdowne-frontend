@@ -182,10 +182,40 @@
   padding: 0 clamp(20px, 3vw, 40px);
 }
 
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
 .headerTitle {
   font-size: 1.15rem;
   font-weight: 700;
   color: var(--text-main);
+}
+
+.mobileMenuBtn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  color: #334155;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.mobileMenuBtn:hover {
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+.sidebarBackdrop {
+  display: none;
 }
 
 .contentBody {
@@ -200,12 +230,53 @@
 @media (max-width: 860px) {
   .adminLayout {
     flex-direction: column;
+    position: relative;
   }
-  .sidebar,
+
+  .sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    width: min(280px, 86vw);
+    z-index: 1200;
+    box-shadow: 8px 0 24px rgba(15, 23, 42, 0.25);
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: transform;
+  }
+
+  .sidebarMobileOpen {
+    transform: translateX(0);
+  }
+
   .sidebarCollapsed {
-    width: 100%;
+    width: min(280px, 86vw);
   }
-  .sidebarCollapsed .navLink {
-    justify-content: flex-start;
+
+  .sidebarBackdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 1100;
+    border: none;
+    padding: 0;
+    margin: 0;
+    background: rgba(15, 23, 42, 0.45);
+    cursor: pointer;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .sidebarBackdropVisible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .mobileMenuBtn {
+    display: flex;
+  }
+
+  .mainContent {
+    width: 100%;
   }
 }

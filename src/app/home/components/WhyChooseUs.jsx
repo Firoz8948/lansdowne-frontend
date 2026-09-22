@@ -26,12 +26,10 @@ export default function WhyChooseUs() {
   ];
 
   return (
-    <section className={styles.section} style={{ backgroundColor: '#f8fafc', borderRadius: 'var(--radius-xl)' }}>
+    <section className={`${styles.section} ${styles.featuresSection}`} style={{ backgroundColor: '#f8fafc', borderRadius: 'var(--radius-xl)' }}>
       <div className={styles.sectionHeader} style={{ justifyContent: 'center', textAlign: 'center' }}>
-        <div className={styles.sectionTitleGroup} style={{ alignItems: 'center' }}>
-          <span className={styles.sectionTag}>The Lansdowne Difference</span>
-          <h2 className={styles.sectionTitle}>Why Choose Lansdowne</h2>
-        </div>
+        <h2 className={styles.sectionTitle}>THE LANSDOWNE DIFFERENCE</h2>
+        <p className={styles.sectionSubtitle}>Why Choose Lansdowne</p>
       </div>
 
       <div className={styles.featuresGrid}>

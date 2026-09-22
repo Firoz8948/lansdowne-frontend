@@ -1,6 +1,5 @@
 .shopNowBtn {
   background: transparent;
-  color: #ffffff;
   padding: 16px 44px;
   border-radius: 0;
   font-weight: 700;
@@ -15,17 +14,46 @@
   min-width: 220px;
   transition: all var(--transition-normal, 0.3s ease);
   box-shadow: none;
-  border: 2px solid #ffffff;
+  border: 2px solid currentColor;
   cursor: pointer;
   text-decoration: none;
   box-sizing: border-box;
 }
 
-.shopNowBtn:hover {
+.shopNowBtn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Dark backgrounds (hero, overlays) — white outline */
+.onDark {
+  color: #ffffff;
+  border-color: #ffffff;
+}
+
+.onDark:hover:not(:disabled) {
   background: rgba(255, 255, 255, 0.15);
   transform: translateY(-2px);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-  filter: none;
+}
+
+/* Light backgrounds (PDP, white pages) — dark outline */
+.onLight {
+  color: #0f172a;
+  border-color: #0f172a;
+}
+
+.onLight:hover:not(:disabled) {
+  background: rgba(15, 23, 42, 0.06);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
+}
+
+.fullWidth {
+  width: 100%;
+  min-width: 0;
 }
 
 /* Size Variants */
@@ -51,7 +79,6 @@
   font-size: var(--text-body, 0.95rem);
 }
 
-/* Responsive adjustments */
 @media (max-width: 640px) {
   .shopNowBtn {
     padding: 13px 32px;
@@ -65,5 +92,9 @@
     padding: 9px 20px;
     min-width: 130px;
     font-size: 0.75rem;
+  }
+
+  .fullWidth {
+    min-width: 0;
   }
 }

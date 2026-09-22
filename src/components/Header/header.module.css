@@ -1,11 +1,21 @@
 .header {
-  position: absolute;
   top: 0;
   left: 0;
   z-index: 100;
-  background: #ffffff;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
   width: 100%;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+/* Home: overlay on hero */
+.headerHome {
+  position: absolute;
+  background: #ffffff;
+}
+
+/* All other pages: solid bar, content starts below */
+.headerSolid {
+  position: relative;
+  background: #ffffff;
 }
 
 .inner {
@@ -94,8 +104,9 @@
 }
 
 .navLink {
+  font-family: var(--font-family-heading);
   font-size: var(--text-h3);
-  font-weight: 500;
+  font-weight: 400;
   color: #0f172a;
   transition: color var(--transition-fast);
   padding: 6px 2px;
@@ -108,7 +119,7 @@
 
 .navLinkActive {
   color: #5c3d2e;
-  font-weight: 700;
+  font-weight: 400;
 }
 
 /* ================= ICON ACTIONS (Cart & Profile) ================= */
@@ -120,6 +131,7 @@
 }
 
 .iconBtn {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -131,6 +143,22 @@
 .iconBtn:hover {
   color: #5c3d2e;
   transform: translateY(-1px);
+}
+
+.cartBadge {
+  position: absolute;
+  top: -2px;
+  right: -6px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: #0f172a;
+  color: #ffffff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  line-height: 18px;
+  text-align: center;
 }
 
 /* ================= MOBILE HAMBURGER BUTTON ================= */
@@ -222,8 +250,9 @@
   padding: 12px 14px;
   border-radius: var(--radius-sm);
   color: var(--text-main);
+  font-family: var(--font-family-heading);
   font-size: var(--text-h3);
-  font-weight: 600;
+  font-weight: 400;
   transition: all var(--transition-fast);
 }
 
@@ -277,10 +306,23 @@
   text-align: center;
 }
 
+.drawerOverlayClosing {
+  animation: fadeOut 0.25s ease forwards;
+}
+
+.drawerContentClosing {
+  animation: slideOutLeft 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
 /* ================= ANIMATIONS ================= */
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
 }
 
 @keyframes slideInLeft {
@@ -288,48 +330,91 @@
   to { transform: translateX(0); }
 }
 
+@keyframes slideOutLeft {
+  from { transform: translateX(0); }
+  to { transform: translateX(-100%); }
+}
+
 /* ================= RESPONSIVE BREAKPOINTS ================= */
 @media (max-width: 1024px) {
-  .header {
-    background: transparent;
-    border-bottom: none;
-  }
   .inner {
     height: 70px;
   }
+
   .desktopNav {
     display: none;
   }
+
   .hamburgerBtn {
     display: flex;
-    color: #ffffff;
     background: none;
     border: none;
     padding: 0;
     box-shadow: none;
   }
+
   .hamburgerBtn:hover,
   .hamburgerBtn:focus,
   .hamburgerBtn:active {
     background: none;
     box-shadow: none;
   }
+
   .textLogoLink {
     display: none;
   }
-  .mainLogoLink {
+
+  /* Home only: transparent overlay over hero */
+  .headerHome {
+    background: transparent;
+    border-bottom: none;
+  }
+
+  .headerHome .hamburgerBtn {
+    color: #ffffff;
+  }
+
+  .headerHome .mainLogoLink {
     background: transparent;
     box-shadow: none;
   }
-  .mainLogoLink:hover {
+
+  .headerHome .mainLogoLink:hover {
     box-shadow: none;
   }
-  .mainLogoImg {
+
+  .headerHome .mainLogoImg {
     width: 46px;
     height: 46px;
     background: transparent;
   }
-  .iconBtn {
+
+  .headerHome .iconBtn {
     color: #ffffff;
+  }
+
+  /* Non-home pages: solid white navbar */
+  .headerSolid {
+    background: #ffffff;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  }
+
+  .headerSolid .hamburgerBtn {
+    color: #0f172a;
+  }
+
+  .headerSolid .mainLogoLink {
+    background: #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  }
+
+  .headerSolid .mainLogoImg {
+    width: 46px;
+    height: 46px;
+    background: #ffffff;
+  }
+
+  .headerSolid .iconBtn {
+    color: #0f172a;
   }
 }

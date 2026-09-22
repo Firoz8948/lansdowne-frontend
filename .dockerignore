@@ -1,0 +1,13 @@
+.git
+.github
+.gitignore
+.env
+.env.local
+.env*.local
+node_modules
+.next
+out
+npm-debug.log*
+README.md
+*.md
+.DS_Store

@@ -11,9 +11,13 @@ export default function ShopNowButton({
   onClick,
   as,
   size = 'lg',
+  variant = 'onDark',
   className = '',
   showArrow = true,
   iconSize,
+  fullWidth = false,
+  disabled = false,
+  type = 'button',
   ...rest
 }) {
   const content = children || text;
@@ -22,8 +26,12 @@ export default function ShopNowButton({
   const combinedClassName = [
     styles.shopNowBtn,
     styles[size] || '',
+    variant === 'onLight' ? styles.onLight : styles.onDark,
+    fullWidth ? styles.fullWidth : '',
     className,
-  ].filter(Boolean).join(' ');
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   const innerContent = (
     <>
@@ -48,9 +56,15 @@ export default function ShopNowButton({
     );
   }
 
-  if (as === 'button' || (!href && onClick)) {
+  if (as === 'button' || (!href && onClick) || (!href && as === undefined)) {
     return (
-      <button type="button" className={combinedClassName} onClick={onClick} {...rest}>
+      <button
+        type={type}
+        className={combinedClassName}
+        onClick={onClick}
+        disabled={disabled}
+        {...rest}
+      >
         {innerContent}
       </button>
     );

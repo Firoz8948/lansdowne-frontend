@@ -3,8 +3,8 @@ import Header from '@/components/Header/Header';
 import Footer from '@/components/Footer/Footer';
 import {
   Hero,
-  TrustBar,
   CategoryShowcase,
+  ProductShowcase,
   WhyChooseUs,
   Newsletter,
 } from './components';
@@ -16,9 +16,9 @@ export default function HomeScreen() {
       <main className={styles.main}>
         <Hero />
         <CategoryShowcase />
+        <ProductShowcase />
         <WhyChooseUs />
         <Newsletter />
-        <TrustBar />
       </main>
       <Footer />
     </div>

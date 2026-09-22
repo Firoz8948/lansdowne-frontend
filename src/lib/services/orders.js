@@ -1,12 +1,20 @@
 import apiClient from '../api';
 
 export const orderService = {
+  async createCodOrder(orderData) {
+    return apiClient.post('/orders/create', orderData);
+  },
+
   async createOrder(orderData) {
-    return apiClient.post('/orders', orderData);
+    return this.createCodOrder(orderData);
   },
 
   async getOrder(orderId) {
     return apiClient.get(`/orders/${orderId}`);
+  },
+
+  async myOrders() {
+    return apiClient.get('/orders/my');
   },
 
   async trackOrder(orderId, phone) {

@@ -10,7 +10,7 @@
   max-width: var(--container-2xl);
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
+  grid-template-columns: 2fr 1fr 1fr;
   gap: clamp(24px, 4vw, 56px);
   margin-bottom: 48px;
 }

@@ -1,6 +1,7 @@
 import './globals.css';
 import { Plus_Jakarta_Sans, Arapey } from 'next/font/google';
 import { Toaster } from 'react-hot-toast';
+import Providers from '@/components/Providers';
 
 const fontSans = Plus_Jakarta_Sans({
   subsets: ['latin'],
@@ -26,8 +27,10 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${fontSans.variable} ${fontHeading.variable}`}>
       <body className={fontSans.className}>
-        <Toaster position="top-right" />
-        {children}
+        <Providers>
+          <Toaster position="top-right" />
+          {children}
+        </Providers>
       </body>
     </html>
   );

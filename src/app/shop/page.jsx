@@ -1,6 +1,8 @@
-import styles from './shop.module.css';
+import { Suspense } from 'react';
 import Header from '@/components/Header/Header';
 import Footer from '@/components/Footer/Footer';
+import ShopScreen from './components/ShopScreen';
+import styles from './shop.module.css';
 
 export const metadata = {
   title: 'Shop | Lansdowne',
@@ -12,13 +14,18 @@ export default function ShopPage() {
     <div className={styles.container}>
       <Header />
       <main className={styles.main}>
-        <div className={styles.headerSection}>
-          <h1 className={styles.title}>Shop Collection</h1>
-          <p className={styles.subtitle}>Explore our complete range of products.</p>
-        </div>
-        <div className={styles.placeholderCard}>
-          Product filters, categories, and items grid will be placed here.
-        </div>
+        <Suspense
+          fallback={
+            <div className={styles.shopContent}>
+              <div className={styles.pageHeader}>
+                <h1 className={styles.pageTitle}>Shop</h1>
+                <p className={styles.pageSubtitle}>Loading collection…</p>
+              </div>
+            </div>
+          }
+        >
+          <ShopScreen />
+        </Suspense>
       </main>
       <Footer />
     </div>

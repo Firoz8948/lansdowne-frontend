@@ -1,22 +1,28 @@
-import styles from './checkout.module.css';
-import Header from '@/components/Header/Header';
-import Footer from '@/components/Footer/Footer';
+import { Suspense } from 'react';
+import CheckoutScreen from './CheckoutScreen';
 
 export const metadata = {
   title: 'Checkout | Lansdowne',
+  description: 'Complete your Lansdowne order securely.',
 };
 
 export default function CheckoutPage() {
   return (
-    <div className={styles.container}>
-      <Header />
-      <main className={styles.main}>
-        <h1 className={styles.heading}>Secure Checkout</h1>
-        <div className={styles.card}>
-          Shipping address form, order summary, and payment gateway widgets will be placed here.
+    <Suspense
+      fallback={
+        <div
+          style={{
+            minHeight: '100vh',
+            display: 'grid',
+            placeItems: 'center',
+            color: '#64748b',
+          }}
+        >
+          Loading checkout…
         </div>
-      </main>
-      <Footer />
-    </div>
+      }
+    >
+      <CheckoutScreen />
+    </Suspense>
   );
 }

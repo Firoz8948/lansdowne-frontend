@@ -1,24 +1,44 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { Menu, X, ShoppingCart, User, ArrowRight } from 'lucide-react';
+import { useCart } from '@/context/CartContext';
 import styles from './header.module.css';
+
+const DRAWER_ANIMATION_MS = 300;
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileMenuClosing, setMobileMenuClosing] = useState(false);
   const pathname = usePathname();
+  const { totalItems } = useCart();
+
+  const closeMobileMenu = useCallback(() => {
+    if (!mobileMenuOpen || mobileMenuClosing) return;
+    setMobileMenuClosing(true);
+    window.setTimeout(() => {
+      setMobileMenuOpen(false);
+      setMobileMenuClosing(false);
+    }, DRAWER_ANIMATION_MS);
+  }, [mobileMenuOpen, mobileMenuClosing]);
+
+  const openMobileMenu = () => {
+    setMobileMenuClosing(false);
+    setMobileMenuOpen(true);
+  };
 
   // Close mobile menu on route change
   useEffect(() => {
-    setMobileMenuOpen(false);
+    if (mobileMenuOpen) closeMobileMenu();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
   // Prevent background scroll when mobile drawer is open
   useEffect(() => {
-    if (mobileMenuOpen) {
+    if (mobileMenuOpen || mobileMenuClosing) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = '';
@@ -26,7 +46,7 @@ export default function Header() {
     return () => {
       document.body.style.overflow = '';
     };
-  }, [mobileMenuOpen]);
+  }, [mobileMenuOpen, mobileMenuClosing]);
 
   const navLinks = [
     { label: 'Home', href: '/' },
@@ -36,9 +56,11 @@ export default function Header() {
     { label: 'Contact', href: '/contact-us' },
   ];
 
+  const isHome = pathname === '/';
+
   return (
     <>
-      <header className={styles.header}>
+      <header className={`${styles.header} ${isHome ? styles.headerHome : styles.headerSolid}`}>
         <div className={styles.inner}>
           
           {/* ================= LEFT SECTION ================= */}
@@ -47,7 +69,7 @@ export default function Header() {
             <button
               type="button"
               className={styles.hamburgerBtn}
-              onClick={() => setMobileMenuOpen(true)}
+              onClick={openMobileMenu}
               aria-label="Open Navigation Menu"
             >
               <Menu size={24} strokeWidth={1.5} />
@@ -113,6 +135,11 @@ export default function Header() {
             <div className={styles.iconActions}>
               <Link href="/cart" className={styles.iconBtn} aria-label="Shopping Cart">
                 <ShoppingCart size={20} strokeWidth={1.5} />
+                {totalItems > 0 && (
+                  <span className={styles.cartBadge}>
+                    {totalItems > 99 ? '99+' : totalItems}
+                  </span>
+                )}
               </Link>
               <Link href="/account/login" className={styles.iconBtn} aria-label="My Account">
                 <User size={20} strokeWidth={1.5} />
@@ -124,16 +151,19 @@ export default function Header() {
       </header>
 
       {/* ================= MOBILE DRAWER MENU ================= */}
-      {mobileMenuOpen && (
-        <div className={styles.drawerOverlay} onClick={() => setMobileMenuOpen(false)}>
+      {(mobileMenuOpen || mobileMenuClosing) && (
+        <div
+          className={`${styles.drawerOverlay} ${mobileMenuClosing ? styles.drawerOverlayClosing : ''}`}
+          onClick={closeMobileMenu}
+        >
           <div
-            className={styles.drawerContent}
+            className={`${styles.drawerContent} ${mobileMenuClosing ? styles.drawerContentClosing : ''}`}
             onClick={(e) => e.stopPropagation()}
             role="dialog"
             aria-modal="true"
           >
             <div className={styles.drawerHeader}>
-              <Link href="/" className={styles.drawerLogoLink} onClick={() => setMobileMenuOpen(false)}>
+              <Link href="/" className={styles.drawerLogoLink} onClick={closeMobileMenu}>
                 <Image
                   src="/assets/text_logo.svg"
                   alt="Lansdowne"
@@ -145,7 +175,7 @@ export default function Header() {
               <button
                 type="button"
                 className={styles.drawerCloseBtn}
-                onClick={() => setMobileMenuOpen(false)}
+                onClick={closeMobileMenu}
                 aria-label="Close Navigation Menu"
               >
                 <X size={22} />
@@ -158,7 +188,7 @@ export default function Header() {
                   key={link.href}
                   href={link.href}
                   className={`${styles.drawerNavLink} ${pathname === link.href ? styles.drawerNavLinkActive : ''}`}
-                  onClick={() => setMobileMenuOpen(false)}
+                  onClick={closeMobileMenu}
                 >
                   <span>{link.label}</span>
                   <ArrowRight size={16} className={styles.drawerLinkArrow} />
@@ -170,16 +200,37 @@ export default function Header() {
               <Link
                 href="/faqs"
                 className={styles.drawerSecondaryLink}
-                onClick={() => setMobileMenuOpen(false)}
+                onClick={closeMobileMenu}
               >
                 FAQs & Support
               </Link>
               <Link
-                href="/policy"
+                href="/policy/privacy-policy"
                 className={styles.drawerSecondaryLink}
-                onClick={() => setMobileMenuOpen(false)}
+                onClick={closeMobileMenu}
               >
-                Store Policies
+                Privacy Policy
+              </Link>
+              <Link
+                href="/policy/terms-and-conditions"
+                className={styles.drawerSecondaryLink}
+                onClick={closeMobileMenu}
+              >
+                Terms & Conditions
+              </Link>
+              <Link
+                href="/policy/shipping-policy"
+                className={styles.drawerSecondaryLink}
+                onClick={closeMobileMenu}
+              >
+                Shipping Policy
+              </Link>
+              <Link
+                href="/policy/refund-policy"
+                className={styles.drawerSecondaryLink}
+                onClick={closeMobileMenu}
+              >
+                Returns & Refunds
               </Link>
 
             </nav>

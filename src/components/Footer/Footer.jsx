@@ -19,7 +19,7 @@ export default function Footer() {
               Shop Collection
             </Link>
             <Link href="/watch-and-shop" className={styles.link}>
-              Watch & Shop
+              Watch &amp; Shop
             </Link>
             <Link href="/about" className={styles.link}>
               About Us
@@ -27,20 +27,8 @@ export default function Footer() {
             <Link href="/contact-us" className={styles.link}>
               Contact Us
             </Link>
-          </div>
-        </div>
-
-        <div>
-          <h3 className={styles.colTitle}>Help & Support</h3>
-          <div className={styles.linkList}>
             <Link href="/faqs" className={styles.link}>
               FAQs
-            </Link>
-            <Link href="/policy/shipping-policy" className={styles.link}>
-              Shipping Info
-            </Link>
-            <Link href="/policy/refund-policy" className={styles.link}>
-              Returns & Refunds
             </Link>
           </div>
         </div>
@@ -52,10 +40,13 @@ export default function Footer() {
               Privacy Policy
             </Link>
             <Link href="/policy/terms-and-conditions" className={styles.link}>
-              Terms & Conditions
+              Terms &amp; Conditions
             </Link>
-            <Link href="/policy" className={styles.link}>
-              All Policies
+            <Link href="/policy/shipping-policy" className={styles.link}>
+              Shipping Policy
+            </Link>
+            <Link href="/policy/refund-policy" className={styles.link}>
+              Returns &amp; Refunds
             </Link>
           </div>
         </div>
@@ -63,7 +54,7 @@ export default function Footer() {
 
       <div className={styles.bottomBar}>
         <span>© {new Date().getFullYear()} Lansdowne. All rights reserved.</span>
-        <span>Secure Payments & Fast Delivery</span>
+        <span>Secure Payments &amp; Fast Delivery</span>
       </div>
     </footer>
   );

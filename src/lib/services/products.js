@@ -9,6 +9,14 @@ export const productService = {
     return apiClient.get(`/products/${slugOrId}`);
   },
 
+  async getFeaturedProducts() {
+    return apiClient.get('/products/featured');
+  },
+
+  async getMetafieldDefinitions() {
+    return apiClient.get('/metafields/');
+  },
+
   async getCategories() {
     return apiClient.get('/categories');
   },

@@ -7,55 +7,75 @@
 
 .main {
   flex: 1;
-  max-width: var(--container-lg);
-  margin: 0 auto;
-  padding: clamp(48px, 6vw, 80px) var(--gutter-inline);
   width: 100%;
 }
 
-.title {
-  font-size: var(--text-h1);
-  font-weight: 800;
+/* ── Contact Info Cards ── */
+.infoSection {
+  max-width: var(--container-2xl);
+  margin: 0 auto;
+  padding: clamp(48px, 6vw, 80px) var(--gutter-inline) 0;
+}
+
+.sectionHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: clamp(24px, 3.5vw, 36px);
+}
+
+.sectionTitle {
+  font-size: var(--text-h2);
+  font-weight: 400;
   color: var(--text-main);
-  letter-spacing: -0.02em;
-  margin-bottom: 12px;
-  text-align: center;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+  margin: 0;
 }
 
-.subtitle {
-  font-size: var(--text-body);
+.sectionSubtitle {
+  font-size: clamp(0.85rem, 1vw, 0.95rem);
   color: var(--text-muted);
-  text-align: center;
-  margin-bottom: clamp(36px, 5vw, 56px);
+  line-height: 1.3;
+  margin: 0;
+  font-weight: 400;
+  letter-spacing: 0.01em;
 }
 
-.grid {
+.infoGrid {
   display: grid;
-  grid-template-columns: 1fr 1.2fr;
-  gap: clamp(24px, 3.5vw, 44px);
-}
-
-@media (max-width: 860px) {
-  .grid {
-    grid-template-columns: 1fr;
-  }
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+  gap: clamp(14px, 2vw, 20px);
 }
 
 .infoCard {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  padding: clamp(24px, 3vw, 36px);
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  box-shadow: var(--shadow-sm);
-}
-
-.infoItem {
+  padding: clamp(22px, 3vw, 28px);
   display: flex;
   flex-direction: column;
   gap: 6px;
+  transition: all var(--transition-normal);
+  box-shadow: var(--shadow-xs);
+}
+
+.infoCard:hover {
+  border-color: var(--border-hover);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.infoIcon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  background: var(--accent-subtle);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
 }
 
 .infoLabel {
@@ -72,18 +92,37 @@
   font-weight: 600;
 }
 
+.infoExtra {
+  font-size: var(--text-body);
+  color: var(--text-subtle);
+  line-height: 1.5;
+}
+
+/* ── Form Section ── */
+.formSection {
+  max-width: var(--container-2xl);
+  margin: 0 auto;
+  padding: clamp(48px, 6vw, 72px) var(--gutter-inline) clamp(48px, 6vw, 80px);
+}
+
 .formCard {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  padding: clamp(24px, 3vw, 36px);
+  padding: clamp(28px, 4vw, 44px);
   box-shadow: var(--shadow-sm);
 }
 
 .form {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 20px;
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
 }
 
 .inputGroup {
@@ -98,7 +137,8 @@
   color: var(--text-main);
 }
 
-.input, .textarea {
+.input,
+.textarea {
   width: 100%;
   padding: 12px 16px;
   border-radius: var(--radius-sm);
@@ -106,29 +146,41 @@
   font-size: var(--text-body);
   outline: none;
   transition: border-color var(--transition-fast);
+  background: var(--background);
 }
 
-.input:focus, .textarea:focus {
-  border-color: var(--primary);
+.input:focus,
+.textarea:focus {
+  border-color: var(--border-focus);
 }
 
 .textarea {
-  min-height: 130px;
+  min-height: 140px;
   resize: vertical;
 }
 
 .submitBtn {
-  background-color: var(--primary);
+  align-self: flex-start;
+  background: var(--primary);
   color: var(--text-inverse);
-  padding: 14px;
-  border-radius: var(--radius-md);
-  font-weight: 600;
+  padding: 14px 36px;
+  font-weight: 700;
   font-size: var(--text-body);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   transition: all var(--transition-fast);
-  margin-top: 8px;
+  border: none;
+  margin-top: 4px;
 }
 
 .submitBtn:hover {
-  background-color: var(--primary-hover);
+  background: var(--primary-hover);
   transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+@media (max-width: 640px) {
+  .formRow {
+    grid-template-columns: 1fr;
+  }
 }

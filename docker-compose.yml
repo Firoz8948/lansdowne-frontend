@@ -1,0 +1,19 @@
+# Frontend only (for EC2 / production)
+# Usage: docker compose up -d --build
+# NEXT_PUBLIC_* are baked in at build time — change .env.production then rebuild.
+
+services:
+  frontend:
+    build:
+      context: .
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-https://api.lansdowneleather.com}
+        NEXT_PUBLIC_API_BASE: ${NEXT_PUBLIC_API_BASE:-https://api.lansdowneleather.com/api/v1}
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-https://lansdowneleather.com}
+        NEXT_PUBLIC_SITE_NAME: ${NEXT_PUBLIC_SITE_NAME:-Lansdowne}
+    container_name: lansdowne_frontend
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3000:3000"
+    env_file:
+      - .env.production

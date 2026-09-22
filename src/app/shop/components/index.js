@@ -1,2 +1,1 @@
-// Component exports for Shop module
-export {};
+export { default as ShopScreen } from './ShopScreen';

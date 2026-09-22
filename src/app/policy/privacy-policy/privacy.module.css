@@ -13,26 +13,12 @@
   width: 100%;
 }
 
-.title {
-  font-size: var(--text-h1);
-  font-weight: 800;
-  color: var(--text-main);
-  letter-spacing: -0.02em;
-  margin-bottom: 8px;
-}
-
-.lastUpdated {
-  font-size: var(--text-body);
-  color: var(--text-muted);
-  margin-bottom: 32px;
-}
-
 .content {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  padding: clamp(28px, 4vw, 44px);
-  line-height: 1.75;
+  padding: clamp(28px, 4vw, 48px);
+  line-height: 1.8;
   color: #334155;
   box-shadow: var(--shadow-sm);
 }
@@ -41,8 +27,9 @@
   font-size: var(--text-h3);
   font-weight: 700;
   color: var(--text-main);
-  margin-top: 28px;
-  margin-bottom: 10px;
+  margin-top: 32px;
+  margin-bottom: 12px;
+  font-family: var(--font-family-sans);
 }
 
 .sectionHeading:first-child {
@@ -52,4 +39,109 @@
 .paragraph {
   margin-bottom: 18px;
   font-size: var(--text-body);
+  line-height: 1.8;
+}
+
+.paragraph:last-child {
+  margin-bottom: 0;
+}
+
+.list {
+  margin: 8px 0 18px;
+  padding-left: 24px;
+}
+
+.list li {
+  font-size: var(--text-body);
+  line-height: 1.8;
+  margin-bottom: 6px;
+  color: #475569;
+}
+
+.list li:last-child {
+  margin-bottom: 0;
+}
+
+/* ── Highlight Box (for key info) ── */
+.highlightBox {
+  background: var(--accent-subtle);
+  border-left: 3px solid var(--accent);
+  padding: 16px 20px;
+  margin: 16px 0 20px;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+.highlightBox p {
+  margin: 0;
+  font-size: var(--text-body);
+  color: var(--text-main);
+  font-weight: 500;
+  line-height: 1.65;
+}
+
+/* ── Table ── */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0 20px;
+  font-size: var(--text-body);
+}
+
+.table th,
+.table td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+.table th {
+  background: var(--surface-subtle);
+  font-weight: 700;
+  color: var(--text-main);
+  font-size: var(--text-micro);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.table td {
+  color: #475569;
+}
+
+.table tr:last-child td {
+  border-bottom: none;
+}
+
+/* ── Steps ── */
+.steps {
+  margin: 16px 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.step {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.stepNumber {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.stepText {
+  font-size: var(--text-body);
+  color: #475569;
+  line-height: 1.7;
 }

@@ -49,14 +49,6 @@ const IconCategories = (p) => (
   </Icon>
 );
 
-const IconBanners = (p) => (
-  <Icon {...p}>
-    <rect x="3" y="3" width="18" height="18" rx="2" />
-    <circle cx="9" cy="9" r="2" />
-    <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
-  </Icon>
-);
-
 const IconFeeds = (p) => (
   <Icon {...p}>
     <path d="M4 11a9 9 0 0 1 9 9" />
@@ -89,34 +81,21 @@ const IconPromo = (p) => (
   </Icon>
 );
 
+const IconCustomers = (p) => (
+  <Icon {...p}>
+    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+    <circle cx="9" cy="7" r="4" />
+    <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+  </Icon>
+);
+
 const IconShipping = (p) => (
   <Icon {...p}>
     <path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2" />
     <path d="M15 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 13.52 9H14" />
     <circle cx="17" cy="18" r="2" />
     <circle cx="7" cy="18" r="2" />
-  </Icon>
-);
-
-const IconShippingZones = (p) => (
-  <Icon {...p}>
-    <circle cx="12" cy="12" r="10" />
-    <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
-    <path d="M2 12h20" />
-  </Icon>
-);
-
-const IconContact = (p) => (
-  <Icon {...p}>
-    <rect x="2" y="4" width="20" height="16" rx="2" />
-    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-  </Icon>
-);
-
-const IconMeta = (p) => (
-  <Icon {...p}>
-    <path d="M12 20h9" />
-    <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
   </Icon>
 );
 
@@ -131,13 +110,6 @@ const IconLogout = (p) => (
     <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
     <polyline points="16 17 21 12 16 7" />
     <line x1="21" y1="12" x2="9" y2="12" />
-  </Icon>
-);
-
-const IconStore = (p) => (
-  <Icon {...p}>
-    <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-    <polyline points="9 22 9 12 15 12 15 22" />
   </Icon>
 );
 
@@ -167,7 +139,6 @@ const navSections = [
     items: [
       { href: '/admin/products', label: 'Products', icon: IconProducts },
       { href: '/admin/categories', label: 'Categories', icon: IconCategories },
-      { href: '/admin/banners', label: 'Banners', icon: IconBanners },
       { href: '/admin/feeds', label: 'Catalog Feeds', icon: IconFeeds },
     ],
   },
@@ -177,38 +148,63 @@ const navSections = [
       { href: '/admin/orders', label: 'Orders', icon: IconOrders },
       { href: '/admin/payments', label: 'Payments', icon: IconPayments },
       { href: '/admin/promocodes', label: 'Promo Codes', icon: IconPromo },
+      { href: '/admin/customers', label: 'Customers', icon: IconCustomers },
     ],
   },
   {
     label: 'Shipping',
     items: [
       { href: '/admin/shipping', label: 'Shipping', icon: IconShipping },
-      { href: '/admin/shipping-zones', label: 'Shipping Zones', icon: IconShippingZones },
     ],
   },
   {
     label: 'Content',
     items: [
-      { href: '/admin/contact', label: 'Contact Messages', icon: IconContact },
-      { href: '/admin/meta', label: 'Meta / SEO', icon: IconMeta },
       { href: '/admin/metafields', label: 'Metafields', icon: IconMetafields },
     ],
   },
 ];
 
+const IconMenu = (p) => (
+  <Icon {...p}>
+    <line x1="4" y1="6" x2="20" y2="6" />
+    <line x1="4" y1="12" x2="20" y2="12" />
+    <line x1="4" y1="18" x2="20" y2="18" />
+  </Icon>
+);
+
 export default function AdminShell({ children }) {
   const pathname = usePathname();
   const router = useRouter();
   const [collapsed, setCollapsed] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 860px)');
+    const sync = () => {
+      const mobile = mq.matches;
+      setIsMobile(mobile);
+      if (mobile) setCollapsed(true);
+      else setCollapsed(false);
+    };
+    sync();
+    mq.addEventListener('change', sync);
+    return () => mq.removeEventListener('change', sync);
+  }, []);
 
   useEffect(() => {
     if (pathname !== '/admin/login') {
-      const token = authService.getToken();
+      const token = authService.getAdminToken();
       if (!token) {
         router.push('/admin/login');
       }
     }
   }, [pathname, router]);
+
+  // Close mobile sidebar after navigation
+  useEffect(() => {
+    if (isMobile) setCollapsed(true);
+  }, [pathname, isMobile]);
 
   // If on login page, render full-screen without sidebar/header shell
   if (pathname === '/admin/login') {
@@ -216,7 +212,7 @@ export default function AdminShell({ children }) {
   }
 
   const handleLogout = () => {
-    authService.logout();
+    authService.logoutAdmin();
     router.push('/admin/login');
   };
 
@@ -224,68 +220,91 @@ export default function AdminShell({ children }) {
 
   return (
     <div className={styles.adminLayout}>
-      <aside className={`${styles.sidebar} ${collapsed ? styles.sidebarCollapsed : ''}`}>
-        <div className={styles.brandRow}>
-          {!collapsed && <div className={styles.brand}>Lansdowne Admin</div>}
-          <button
-            className={styles.collapseBtn}
-            onClick={() => setCollapsed((c) => !c)}
-            title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-          >
-            {collapsed ? <IconChevronRight /> : <IconChevronLeft />}
-          </button>
-        </div>
+      <aside
+        className={`${styles.sidebar} ${collapsed && !isMobile ? styles.sidebarCollapsed : ''} ${
+          isMobile && !collapsed ? styles.sidebarMobileOpen : ''
+        }`}
+      >
+          <div className={styles.brandRow}>
+            {!(collapsed && !isMobile) && <div className={styles.brand}>Lansdowne Admin</div>}
+            <button
+              className={styles.collapseBtn}
+              onClick={() => setCollapsed((c) => !c)}
+              title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+              type="button"
+            >
+              {collapsed && !isMobile ? <IconChevronRight /> : <IconChevronLeft />}
+            </button>
+          </div>
 
-        <nav className={styles.nav}>
-          {navSections.map((section, si) => (
-            <div key={si} className={styles.navSection}>
-              {section.label && !collapsed && (
-                <div className={styles.navSectionLabel}>{section.label}</div>
-              )}
-              {section.label && collapsed && (
-                <div className={styles.navSectionDivider} />
-              )}
-              {section.items.map((item) => {
-                const ItemIcon = item.icon;
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className={`${styles.navLink} ${isActive(item.href) ? styles.navLinkActive : ''}`}
-                    title={collapsed ? item.label : undefined}
-                  >
-                    <ItemIcon />
-                    {!collapsed && <span className={styles.navLabel}>{item.label}</span>}
-                  </Link>
-                );
-              })}
-            </div>
-          ))}
+          <nav className={styles.nav}>
+            {navSections.map((section, si) => (
+              <div key={si} className={styles.navSection}>
+                {section.label && !(collapsed && !isMobile) && (
+                  <div className={styles.navSectionLabel}>{section.label}</div>
+                )}
+                {section.label && collapsed && !isMobile && (
+                  <div className={styles.navSectionDivider} />
+                )}
+                {section.items.map((item) => {
+                  const ItemIcon = item.icon;
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className={`${styles.navLink} ${isActive(item.href) ? styles.navLinkActive : ''}`}
+                      title={collapsed && !isMobile ? item.label : undefined}
+                    >
+                      <ItemIcon />
+                      {!(collapsed && !isMobile) && (
+                        <span className={styles.navLabel}>{item.label}</span>
+                      )}
+                    </Link>
+                  );
+                })}
+              </div>
+            ))}
 
-          <div className={styles.navSpacer} />
-          <button
-            onClick={handleLogout}
-            className={styles.navLink}
-            title={collapsed ? 'Sign Out' : undefined}
-            style={{ background: 'none', border: 'none', cursor: 'pointer', width: '100%' }}
-          >
-            <IconLogout />
-            {!collapsed && <span className={styles.navLabel}>Sign Out</span>}
-          </button>
-          <Link
-            href="/"
-            className={styles.navLink}
-            title={collapsed ? 'Back to Store' : undefined}
-          >
-            <IconStore />
-            {!collapsed && <span className={styles.navLabel}>Back to Store</span>}
-          </Link>
-        </nav>
+            <div className={styles.navSpacer} />
+            <button
+              onClick={handleLogout}
+              className={styles.navLink}
+              title={collapsed && !isMobile ? 'Sign Out' : undefined}
+              type="button"
+              style={{ background: 'none', border: 'none', cursor: 'pointer', width: '100%' }}
+            >
+              <IconLogout />
+              {!(collapsed && !isMobile) && <span className={styles.navLabel}>Sign Out</span>}
+            </button>
+          </nav>
       </aside>
+
+      {isMobile && (
+        <button
+          type="button"
+          className={`${styles.sidebarBackdrop} ${!collapsed ? styles.sidebarBackdropVisible : ''}`}
+          aria-label="Close sidebar"
+          aria-hidden={collapsed}
+          tabIndex={collapsed ? -1 : 0}
+          onClick={() => setCollapsed(true)}
+        />
+      )}
 
       <div className={styles.mainContent}>
         <header className={styles.header}>
-          <div className={styles.headerTitle}>Management Portal</div>
+          <div className={styles.headerLeft}>
+            {isMobile && collapsed && (
+              <button
+                type="button"
+                className={styles.mobileMenuBtn}
+                onClick={() => setCollapsed(false)}
+                aria-label="Open sidebar"
+              >
+                <IconMenu />
+              </button>
+            )}
+            <div className={styles.headerTitle}>Management Portal</div>
+          </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <span style={{ fontSize: '0.9rem', color: '#64748b' }}>admin</span>
           </div>
