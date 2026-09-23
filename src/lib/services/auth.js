@@ -17,12 +17,12 @@ export const authService = {
     return data;
   },
 
-  async sendOtp(phone, name = '') {
-    return apiClient.post('/otp/send', { phone, name });
+  async sendOtp(phone, name = '', mode = 'signin') {
+    return apiClient.post('/otp/send', { phone, name, mode });
   },
 
-  async verifyOtp(phone, otp, name = '') {
-    const data = await apiClient.post('/otp/verify', { phone, otp, name });
+  async verifyOtp(phone, otp, name = '', mode = 'signin') {
+    const data = await apiClient.post('/otp/verify', { phone, otp, name, mode });
     if (data?.access_token) {
       Cookies.set(CUSTOMER_TOKEN, data.access_token, { expires: 7 });
       Cookies.remove(LEGACY_TOKEN);
