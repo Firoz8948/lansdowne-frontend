@@ -1,15 +1,14 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import Header from '@/components/Header/Header';
 import Footer from '@/components/Footer/Footer';
-import ShopNowButton from '@/components/ShopNowButton';
 import productService from '@/lib/services/products';
 import { useCart } from '@/context/CartContext';
 import toast from 'react-hot-toast';
-import { ArrowLeft, Minus, Plus, ChevronDown } from 'lucide-react';
+import { ArrowLeft, Minus, Plus, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import styles from './pdp.module.css';
 
 const resolveImageUrl = (url) => {
@@ -24,6 +23,14 @@ const formatPrice = (value) => {
   if (Number.isNaN(num)) return '—';
   return `₹${num.toLocaleString('en-IN')}`;
 };
+
+const stripHtml = (raw) =>
+  String(raw || '')
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/&amp;/gi, '&')
+    .replace(/\s+/g, ' ')
+    .trim();
 
 const DEFAULT_FAQS = [
   {
@@ -46,7 +53,6 @@ const DEFAULT_FAQS = [
 
 export default function ProductDetailPage() {
   const params = useParams();
-  const router = useRouter();
   const slug = params?.slug;
   const { addItem } = useCart();
 
@@ -59,6 +65,10 @@ export default function ProductDetailPage() {
   const [selectedOptions, setSelectedOptions] = useState({});
   const [qty, setQty] = useState(1);
   const [openFaq, setOpenFaq] = useState(0);
+  const [highlightsOpen, setHighlightsOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const touchStartX = useRef(null);
+  const pauseAutoplayUntil = useRef(0);
 
   useEffect(() => {
     if (!slug) return;
@@ -148,9 +158,46 @@ export default function ProductDetailPage() {
     return list.length ? list : [null];
   }, [product]);
 
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 900px)');
+    const sync = () => setIsMobile(mq.matches);
+    sync();
+    mq.addEventListener('change', sync);
+    return () => mq.removeEventListener('change', sync);
+  }, []);
+
+  useEffect(() => {
+    if (!isMobile || images.length < 2 || !images[0]) return undefined;
+    const timer = setInterval(() => {
+      if (Date.now() < pauseAutoplayUntil.current) return;
+      setActiveImage((prev) => (prev + 1) % images.length);
+    }, 3000);
+    return () => clearInterval(timer);
+  }, [isMobile, images]);
+
+  useEffect(() => {
+    if (!isMobile) {
+      setHighlightsOpen(false);
+      return;
+    }
+    // Auto-open on 3rd image; auto-close when leaving it (4th, 1st, etc.)
+    setHighlightsOpen(activeImage === 2);
+  }, [activeImage, isMobile]);
+
   const metafieldSections = useMemo(() => {
     if (!product?.metafields) return [];
     const values = product.metafields;
+
+    const hasContent = (raw) => {
+      if (raw == null) return false;
+      const text = String(raw)
+        .replace(/<[^>]*>/g, ' ')
+        .replace(/&nbsp;/gi, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+      return Boolean(text);
+    };
+
     const fromDefs = (metafieldDefs || [])
       .filter((d) => d.is_active !== false)
       .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
@@ -159,12 +206,12 @@ export default function ProductDetailPage() {
         title: d.name,
         value: values[d.key],
       }))
-      .filter((s) => s.value && String(s.value).trim());
+      .filter((s) => hasContent(s.value));
 
     if (fromDefs.length) return fromDefs;
 
     return Object.entries(values)
-      .filter(([, v]) => v && String(v).trim())
+      .filter(([, v]) => hasContent(v))
       .map(([key, value]) => ({
         key,
         title: key.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
@@ -221,24 +268,38 @@ export default function ProductDetailPage() {
     return { option, variantName: firstVariant.name || null };
   };
 
-  const handleAddToCart = () => {
+  const handleAddToBag = () => {
     if (!inStock) {
       toast.error('This product is out of stock');
       return;
     }
     const { option, variantName } = getSelectedVariantMeta();
     addItem(product, { quantity: qty, option, variantName });
-    toast.success(`${product.name} added to cart`);
+    toast.success(`${product.name} added to bag`);
   };
 
-  const handleBuyNow = () => {
-    if (!inStock) {
-      toast.error('This product is out of stock');
-      return;
+  const goToImage = (index) => {
+    pauseAutoplayUntil.current = Date.now() + 5000;
+    setActiveImage(index);
+  };
+
+  const onGalleryTouchStart = (e) => {
+    touchStartX.current = e.touches?.[0]?.clientX ?? null;
+  };
+
+  const onGalleryTouchEnd = (e) => {
+    if (touchStartX.current == null || images.length < 2) return;
+    const endX = e.changedTouches?.[0]?.clientX;
+    if (endX == null) return;
+    const delta = endX - touchStartX.current;
+    touchStartX.current = null;
+    if (Math.abs(delta) < 40) return;
+    pauseAutoplayUntil.current = Date.now() + 5000;
+    if (delta < 0) {
+      setActiveImage((prev) => (prev + 1) % images.length);
+    } else {
+      setActiveImage((prev) => (prev - 1 + images.length) % images.length);
     }
-    const { option, variantName } = getSelectedVariantMeta();
-    addItem(product, { quantity: qty, option, variantName });
-    router.push('/cart');
   };
 
   return (
@@ -265,7 +326,11 @@ export default function ProductDetailPage() {
             <>
               <div className={styles.layout}>
                 <section className={styles.gallery}>
-                  <div className={styles.mainImageFrame}>
+                  <div
+                    className={styles.mainImageFrame}
+                    onTouchStart={onGalleryTouchStart}
+                    onTouchEnd={onGalleryTouchEnd}
+                  >
                     {images[activeImage] ? (
                       <img
                         src={images[activeImage]}
@@ -278,6 +343,54 @@ export default function ProductDetailPage() {
                     {hasDiscount && (
                       <span className={styles.saleBadge}>Sale</span>
                     )}
+
+                    {detailSections.length > 0 && (
+                      <div
+                        className={`${styles.highlightsPanel} ${
+                          highlightsOpen ? styles.highlightsPanelOpen : ''
+                        }`}
+                      >
+                        <div
+                          className={styles.highlightsBody}
+                          aria-hidden={!highlightsOpen}
+                        >
+                          <p className={styles.highlightsTitle}>Key Highlights</p>
+                          <ul className={styles.highlightsList}>
+                            {detailSections.slice(0, 6).map((section) => (
+                              <li key={section.key} className={styles.highlightsItem}>
+                                <span className={styles.highlightsLabel}>
+                                  {section.title}
+                                </span>
+                                <span className={styles.highlightsValue}>
+                                  {stripHtml(section.value)}
+                                </span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+
+                        <button
+                          type="button"
+                          className={styles.highlightsToggle}
+                          onClick={() => {
+                            pauseAutoplayUntil.current = Date.now() + 8000;
+                            setHighlightsOpen((open) => !open);
+                          }}
+                          aria-label={
+                            highlightsOpen
+                              ? 'Hide key highlights'
+                              : 'Show key highlights'
+                          }
+                          aria-expanded={highlightsOpen}
+                        >
+                          {highlightsOpen ? (
+                            <ChevronLeft size={16} strokeWidth={2.25} />
+                          ) : (
+                            <ChevronRight size={16} strokeWidth={2.25} />
+                          )}
+                        </button>
+                      </div>
+                    )}
                   </div>
 
                   {images.length > 1 && images[0] && (
@@ -289,7 +402,7 @@ export default function ProductDetailPage() {
                           className={`${styles.thumb} ${
                             activeImage === index ? styles.thumbActive : ''
                           }`}
-                          onClick={() => setActiveImage(index)}
+                          onClick={() => goToImage(index)}
                         >
                           <img src={src} alt={`${product.name} ${index + 1}`} />
                         </button>
@@ -374,35 +487,37 @@ export default function ProductDetailPage() {
                   </div>
 
                   <div className={styles.actions}>
-                    <ShopNowButton
-                      as="button"
-                      text={inStock ? 'Add to Cart' : 'Out of Stock'}
-                      onClick={handleAddToCart}
-                      variant="onLight"
-                      size="lg"
+                    <button
+                      type="button"
+                      className={styles.addToBagBtn}
+                      onClick={handleAddToBag}
                       disabled={!inStock}
-                    />
-                    <ShopNowButton
-                      as="button"
-                      text="Buy Now"
-                      onClick={handleBuyNow}
-                      variant="onLight"
-                      size="lg"
-                      disabled={!inStock}
-                    />
+                    >
+                      {inStock ? 'Add to Bag' : 'Out of Stock'}
+                    </button>
                   </div>
 
                   <div className={styles.trustIcons}>
                     {[
                       { src: '/images/authentic_quality.png', label: 'Authentic Quality' },
-                      { src: '/images/made_with_care.png', label: 'Made With Care' },
+                      {
+                        src: '/images/made_with_care.png',
+                        label: (
+                          <>
+                            Made with
+                            <br className={styles.trustLabelBreak} />
+                            <span className={styles.trustLabelDesktopJoin}> </span>
+                            Care
+                          </>
+                        ),
+                      },
                       { src: '/images/secure_shopping.png', label: 'Secure Shopping' },
                       { src: '/images/express_delivery.png', label: 'Express Delivery' },
                     ].map((item) => (
                       <div key={item.src} className={styles.trustIconItem}>
                         <img
                           src={item.src}
-                          alt={item.label}
+                          alt={typeof item.label === 'string' ? item.label : 'Made with Care'}
                           className={styles.trustIconImg}
                         />
                         <span className={styles.trustIconLabel}>{item.label}</span>
@@ -419,28 +534,25 @@ export default function ProductDetailPage() {
                       />
                     </div>
                   )}
+
+                  {detailSections.length > 0 && (
+                    <div className={styles.metafieldBlock}>
+                      <h2 className={styles.descriptionTitle}>Details</h2>
+                      <div className={styles.metafieldList}>
+                        {detailSections.map((section) => (
+                          <article key={section.key} className={styles.metafieldCard}>
+                            <h3 className={styles.metafieldTitle}>{section.title}</h3>
+                            <div
+                              className={styles.metafieldBody}
+                              dangerouslySetInnerHTML={{ __html: section.value }}
+                            />
+                          </article>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </section>
               </div>
-
-              {detailSections.length > 0 && (
-                <section className={styles.contentSection}>
-                  <div className={styles.sectionHeader}>
-                    <h2 className={styles.sectionTitle}>PRODUCT DETAILS</h2>
-                    <p className={styles.sectionSubtitle}>What sets this piece apart</p>
-                  </div>
-                  <div className={styles.metafieldList}>
-                    {detailSections.map((section) => (
-                      <article key={section.key} className={styles.metafieldCard}>
-                        <h3 className={styles.metafieldTitle}>{section.title}</h3>
-                        <div
-                          className={styles.metafieldBody}
-                          dangerouslySetInnerHTML={{ __html: section.value }}
-                        />
-                      </article>
-                    ))}
-                  </div>
-                </section>
-              )}
 
               <section className={styles.contentSection}>
                 <div className={styles.sectionHeader}>
