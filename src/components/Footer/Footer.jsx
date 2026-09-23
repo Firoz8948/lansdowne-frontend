@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import styles from './footer.module.css';
 
 export default function Footer() {
@@ -6,9 +7,18 @@ export default function Footer() {
     <footer className={styles.footer}>
       <div className={styles.inner}>
         <div className={styles.brandCol}>
-          <h2 className={styles.brandName}>Lansdowne</h2>
+          <Link href="/" className={styles.brandLogoLink}>
+            <Image
+              src="/assets/text_logo.svg"
+              alt="Lansdowne"
+              width={180}
+              height={40}
+              className={styles.brandLogo}
+            />
+          </Link>
           <p className={styles.brandDesc}>
-            Curated premium products built for quality, elegance, and distinction.
+            Curated premium leather products built for quality, elegance, and
+            distinction.
           </p>
         </div>
 

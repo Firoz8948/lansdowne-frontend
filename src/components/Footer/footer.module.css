@@ -24,8 +24,17 @@
 
 @media (max-width: 640px) {
   .inner {
-    grid-template-columns: 1fr;
-    gap: 30px;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px 20px;
+  }
+
+  .brandCol {
+    grid-column: 1 / -1;
+  }
+
+  .bottomBar {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
 
@@ -35,11 +44,17 @@
   gap: 14px;
 }
 
-.brandName {
-  font-size: var(--text-h2);
-  font-weight: 400;
-  color: var(--text-main);
-  letter-spacing: -0.01em;
+.brandLogoLink {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  text-decoration: none;
+}
+
+.brandLogo {
+  width: auto;
+  height: clamp(28px, 3.2vw, 36px);
+  object-fit: contain;
 }
 
 .brandDesc {

@@ -252,7 +252,11 @@ export default function CheckoutScreen() {
           state: details.state || prev.state,
         }));
       })
-      .catch(() => {});
+      .catch(() => {
+        if (!cancelled) {
+          toast.error('Could not find city/state for this pincode');
+        }
+      });
 
     return () => {
       cancelled = true;
@@ -517,7 +521,7 @@ export default function CheckoutScreen() {
                       onChange={(e) => updateField('line2', e.target.value)}
                     />
                   </div>
-                  <div className={styles.field}>
+                  <div className={`${styles.field} ${styles.fullWidth}`}>
                     <label className={styles.label} htmlFor="co-landmark">
                       Landmark <span className={styles.optional}>(optional)</span>
                     </label>
@@ -528,7 +532,7 @@ export default function CheckoutScreen() {
                       onChange={(e) => updateField('landmark', e.target.value)}
                     />
                   </div>
-                  <div className={styles.field}>
+                  <div className={`${styles.field} ${styles.fullWidth}`}>
                     <label className={styles.label} htmlFor="co-pincode">
                       Pincode
                     </label>
@@ -540,6 +544,7 @@ export default function CheckoutScreen() {
                       onChange={(e) =>
                         updateField('pincode', digitsOnly(e.target.value).slice(0, 6))
                       }
+                      placeholder="6-digit pincode"
                       required
                     />
                   </div>

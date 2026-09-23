@@ -161,7 +161,7 @@
 
 .title {
   font-family: var(--font-family-heading);
-  font-size: clamp(2rem, 4vw, 3rem);
+  font-size: clamp(1.6rem, 3.2vw, 2.4rem);
   font-weight: 500;
   line-height: 1.15;
   letter-spacing: -0.02em;
@@ -170,6 +170,13 @@
 }
 
 .priceRow {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.priceGroup {
   display: flex;
   align-items: baseline;
   gap: 12px;
@@ -401,7 +408,7 @@
 
 .descriptionHtml {
   color: #57534e;
-  font-size: 0.95rem;
+  font-size: 14px;
   line-height: 1.7;
 }
 
@@ -475,7 +482,7 @@
 
 .metafieldBody {
   color: #0f172a;
-  font-size: 0.9rem;
+  font-size: 14px;
   line-height: 1.55;
 }
 
@@ -522,86 +529,9 @@
 .faqAnswer {
   padding: 0 0 18px;
   color: #57534e;
-  font-size: 0.95rem;
+  font-size: 14px;
   line-height: 1.7;
   max-width: 720px;
-}
-
-.relatedGrid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: clamp(12px, 2vw, 20px);
-}
-
-.relatedCard {
-  display: flex;
-  flex-direction: column;
-  text-decoration: none;
-  color: inherit;
-  border: 1px solid var(--border, #e2e8f0);
-  background: #ffffff;
-  overflow: hidden;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.relatedCard:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md, 0 8px 24px rgba(15, 23, 42, 0.08));
-}
-
-.relatedImageWrap {
-  aspect-ratio: 1;
-  background: #f3eee8;
-  overflow: hidden;
-}
-
-.relatedImage {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-.relatedImageFallback {
-  width: 100%;
-  height: 100%;
-  display: grid;
-  place-items: center;
-  color: #94a3b8;
-  font-size: 0.8rem;
-}
-
-.relatedBody {
-  padding: 14px 12px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.relatedName {
-  margin: 0;
-  font-size: 0.92rem;
-  font-weight: 600;
-  line-height: 1.35;
-  color: var(--text-main);
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.relatedPriceRow {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.9rem;
-  font-weight: 700;
-}
-
-.relatedMrp {
-  font-weight: 500;
-  color: #94a3b8;
-  text-decoration: line-through;
 }
 
 @keyframes fadeIn {
@@ -644,13 +574,43 @@
   }
 
   .thumbRow {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 8px;
     padding: 0 16px;
-    grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .thumbRow::-webkit-scrollbar {
+    display: none;
+  }
+
+  .thumb {
+    flex: 0 0 72px;
+    width: 72px;
+    scroll-snap-align: start;
   }
 
   .info {
     max-width: none;
     padding: 0 16px;
+  }
+
+  .priceRow {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 12px;
+  }
+
+  .stock {
+    flex-shrink: 0;
+    text-align: right;
   }
 
   .contentSection {
@@ -718,14 +678,14 @@
   }
 
   .highlightsLabel {
-    font-size: 0.68rem;
+    font-size: 0.62rem;
     font-weight: 500;
     color: rgba(255, 255, 255, 0.72);
     line-height: 1.2;
   }
 
   .highlightsValue {
-    font-size: 0.82rem;
+    font-size: 0.72rem;
     font-weight: 700;
     color: #ffffff;
     line-height: 1.25;
@@ -763,10 +723,6 @@
     border-right: none;
     padding-left: 0;
     padding-right: 0;
-  }
-
-  .relatedGrid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .trustIcons {
@@ -810,7 +766,6 @@
 
   .thumbRow {
     padding: 0 12px;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
   .metafieldList {

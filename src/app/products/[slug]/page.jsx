@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Header from '@/components/Header/Header';
 import Footer from '@/components/Footer/Footer';
@@ -10,6 +10,7 @@ import { useCart } from '@/context/CartContext';
 import toast from 'react-hot-toast';
 import { ArrowLeft, Minus, Plus, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import styles from './pdp.module.css';
+import cardStyles from '@/app/home/home.module.css';
 
 const resolveImageUrl = (url) => {
   if (!url) return null;
@@ -53,6 +54,7 @@ const DEFAULT_FAQS = [
 
 export default function ProductDetailPage() {
   const params = useParams();
+  const router = useRouter();
   const slug = params?.slug;
   const { addItem } = useCart();
 
@@ -276,6 +278,15 @@ export default function ProductDetailPage() {
     const { option, variantName } = getSelectedVariantMeta();
     addItem(product, { quantity: qty, option, variantName });
     toast.success(`${product.name} added to bag`);
+    router.push('/cart');
+  };
+
+  const handleRelatedAddToBag = (e, item) => {
+    e.preventDefault();
+    e.stopPropagation();
+    addItem(item, { quantity: 1 });
+    toast.success(`${item.name} added to bag`);
+    router.push('/checkout');
   };
 
   const goToImage = (index) => {
@@ -418,15 +429,16 @@ export default function ProductDetailPage() {
                   <h1 className={styles.title}>{product.name}</h1>
 
                   <div className={styles.priceRow}>
-                    <span className={styles.price}>{formatPrice(displayPrice)}</span>
-                    {hasDiscount && (
-                      <span className={styles.mrp}>{formatPrice(displayMrp)}</span>
-                    )}
+                    <div className={styles.priceGroup}>
+                      <span className={styles.price}>{formatPrice(displayPrice)}</span>
+                      {hasDiscount && (
+                        <span className={styles.mrp}>{formatPrice(displayMrp)}</span>
+                      )}
+                    </div>
+                    <p className={`${styles.stock} ${inStock ? styles.inStock : styles.outStock}`}>
+                      {inStock ? `${displayStock} in stock` : 'Out of stock'}
+                    </p>
                   </div>
-
-                  <p className={`${styles.stock} ${inStock ? styles.inStock : styles.outStock}`}>
-                    {inStock ? `${displayStock} in stock` : 'Out of stock'}
-                  </p>
 
                   {(product.variants || []).map((variant) => {
                     const variantKey = variant.id ?? variant.name;
@@ -589,31 +601,81 @@ export default function ProductDetailPage() {
                     <h2 className={styles.sectionTitle}>RELATED PRODUCTS</h2>
                     <p className={styles.sectionSubtitle}>You may also like</p>
                   </div>
-                  <div className={styles.relatedGrid}>
+                  <div className={cardStyles.productGrid}>
                     {relatedProducts.map((item) => {
-                      const image = resolveImageUrl(item.images?.[0]);
+                      const primaryImage = resolveImageUrl(item.images?.[0]);
+                      const hoverImage = resolveImageUrl(item.images?.[1]);
                       const href = item.slug ? `/products/${item.slug}` : '/shop';
-                      const itemHasDiscount =
+                      const hasDiscount =
                         item.mrp != null && Number(item.mrp) > Number(item.price);
+                      const hasHoverImage = Boolean(hoverImage);
+
                       return (
-                        <Link key={item.id} href={href} className={styles.relatedCard}>
-                          <div className={styles.relatedImageWrap}>
-                            {image ? (
-                              <img src={image} alt={item.name} className={styles.relatedImage} />
-                            ) : (
-                              <div className={styles.relatedImageFallback}>No image</div>
-                            )}
-                          </div>
-                          <div className={styles.relatedBody}>
-                            <h3 className={styles.relatedName}>{item.name}</h3>
-                            <div className={styles.relatedPriceRow}>
-                              <span>{formatPrice(item.price)}</span>
-                              {itemHasDiscount && (
-                                <span className={styles.relatedMrp}>{formatPrice(item.mrp)}</span>
+                        <article
+                          key={item.id}
+                          className={`${cardStyles.productCard} ${
+                            hasHoverImage ? cardStyles.productCardHasHoverImg : ''
+                          }`}
+                        >
+                          <div className={cardStyles.productImageWrap}>
+                            <Link href={href} className={cardStyles.productImageLink}>
+                              {primaryImage ? (
+                                <>
+                                  <img
+                                    src={primaryImage}
+                                    alt={item.name}
+                                    className={`${cardStyles.productImage} ${cardStyles.productImagePrimary}`}
+                                    loading="lazy"
+                                  />
+                                  {hasHoverImage && (
+                                    <img
+                                      src={hoverImage}
+                                      alt=""
+                                      aria-hidden="true"
+                                      className={`${cardStyles.productImage} ${cardStyles.productImageSecondary}`}
+                                      loading="lazy"
+                                    />
+                                  )}
+                                </>
+                              ) : (
+                                <div className={cardStyles.productImagePlaceholder}>
+                                  No image
+                                </div>
                               )}
+                            </Link>
+                          </div>
+
+                          <div className={cardStyles.productBody}>
+                            <Link href={href} className={cardStyles.productInfoLink}>
+                              {item.category && (
+                                <span className={cardStyles.productCategory}>
+                                  {item.category}
+                                </span>
+                              )}
+                              <h3 className={cardStyles.productName}>{item.name}</h3>
+                              <div className={cardStyles.productPricing}>
+                                <span className={cardStyles.productPrice}>
+                                  {formatPrice(item.price)}
+                                </span>
+                                {hasDiscount && (
+                                  <span className={cardStyles.productMrp}>
+                                    {formatPrice(item.mrp)}
+                                  </span>
+                                )}
+                              </div>
+                            </Link>
+
+                            <div className={cardStyles.productCardActions}>
+                              <button
+                                type="button"
+                                className={cardStyles.productBuyNowBtn}
+                                onClick={(e) => handleRelatedAddToBag(e, item)}
+                              >
+                                Add to Bag
+                              </button>
                             </div>
                           </div>
-                        </Link>
+                        </article>
                       );
                     })}
                   </div>

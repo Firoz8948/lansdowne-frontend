@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ArrowRight, ShoppingCart } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import productService from '@/lib/services/products';
 import { useCart } from '@/context/CartContext';
 import toast from 'react-hot-toast';
@@ -63,18 +63,12 @@ export default function ProductShowcase() {
     };
   }, []);
 
-  const handleAddToCart = (e, product) => {
+  const handleAddToBag = (e, product) => {
     e.preventDefault();
     e.stopPropagation();
     addItem(product, { quantity: 1 });
-    toast.success(`${product.name} added to cart`);
-  };
-
-  const handleBuyNow = (e, product) => {
-    e.preventDefault();
-    e.stopPropagation();
-    addItem(product, { quantity: 1 });
-    router.push('/cart');
+    toast.success(`${product.name} added to bag`);
+    router.push('/checkout');
   };
 
   return (
@@ -158,17 +152,9 @@ export default function ProductShowcase() {
                     <button
                       type="button"
                       className={styles.productBuyNowBtn}
-                      onClick={(e) => handleBuyNow(e, product)}
+                      onClick={(e) => handleAddToBag(e, product)}
                     >
-                      Buy Now
-                    </button>
-                    <button
-                      type="button"
-                      className={styles.productCartBtn}
-                      onClick={(e) => handleAddToCart(e, product)}
-                      aria-label={`Add ${product.name} to cart`}
-                    >
-                      <ShoppingCart size={16} strokeWidth={1.75} />
+                      Add to Bag
                     </button>
                   </div>
                 </div>

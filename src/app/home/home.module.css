@@ -577,9 +577,10 @@
 
 .productBuyNowBtn {
   flex: 1;
+  width: 100%;
   border: 1.5px solid #0f172a;
-  background: #ffffff;
-  color: #0f172a;
+  background: #0f172a;
+  color: #ffffff;
   padding: 0 12px;
   height: 38px;
   font-size: 0.72rem;
@@ -587,14 +588,14 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   cursor: pointer;
-  transition: background 0.2s ease, color 0.2s ease;
+  transition: background 0.2s ease, opacity 0.2s ease;
   display: inline-flex;
   align-items: center;
   justify-content: center;
 }
 
 .productBuyNowBtn:hover {
-  background: #0f172a;
+  background: #1e293b;
   color: #ffffff;
 }
 
