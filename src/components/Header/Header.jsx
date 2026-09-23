@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { Menu, X, ShoppingCart, User, ArrowRight } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
+import authService from '@/lib/services/auth';
 import styles from './header.module.css';
 
 const DRAWER_ANIMATION_MS = 300;
@@ -13,8 +14,13 @@ const DRAWER_ANIMATION_MS = 300;
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileMenuClosing, setMobileMenuClosing] = useState(false);
+  const [accountHref, setAccountHref] = useState('/account/login');
   const pathname = usePathname();
   const { totalItems } = useCart();
+
+  useEffect(() => {
+    setAccountHref(authService.isLoggedIn() ? '/account' : '/account/login');
+  }, [pathname]);
 
   const closeMobileMenu = useCallback(() => {
     if (!mobileMenuOpen || mobileMenuClosing) return;
@@ -141,7 +147,7 @@ export default function Header() {
                   </span>
                 )}
               </Link>
-              <Link href="/account/login" className={styles.iconBtn} aria-label="My Account">
+              <Link href={accountHref} className={styles.iconBtn} aria-label="My Account">
                 <User size={20} strokeWidth={1.5} />
               </Link>
             </div>

@@ -266,6 +266,38 @@
   font-size: 1.15rem;
 }
 
+.otpBoxes {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  max-width: 280px;
+}
+
+.otpBox {
+  width: 100%;
+  aspect-ratio: 1;
+  max-height: 64px;
+  text-align: center;
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: #ffffff;
+  color: var(--text-main);
+  outline: none;
+  caret-color: var(--text-main);
+  transition: border-color 0.2s ease;
+}
+
+.otpBox:focus {
+  border-color: var(--border-focus);
+}
+
+.otpBox::placeholder {
+  color: transparent;
+}
+
 .submitBtn {
   margin-top: 6px;
   width: 100%;

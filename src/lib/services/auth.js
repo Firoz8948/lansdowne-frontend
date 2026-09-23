@@ -33,6 +33,22 @@ export const authService = {
     return data;
   },
 
+  async getProfile() {
+    const user = await apiClient.get('/auth/me');
+    if (user) {
+      Cookies.set(USER_COOKIE, JSON.stringify(user), { expires: 7 });
+    }
+    return user;
+  },
+
+  async updateProfile(payload) {
+    const user = await apiClient.put('/auth/profile', payload);
+    if (user) {
+      Cookies.set(USER_COOKIE, JSON.stringify(user), { expires: 7 });
+    }
+    return user;
+  },
+
   logout() {
     Cookies.remove(CUSTOMER_TOKEN);
     Cookies.remove(USER_COOKIE);
