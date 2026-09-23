@@ -99,6 +99,14 @@ export const adminService = {
     return apiClient.delete(`/admin/video-products/${id}`);
   },
 
+  async getBrandSettings() {
+    return apiClient.get('/admin/settings');
+  },
+
+  async getMe() {
+    return apiClient.get('/admin/me');
+  },
+
   // Categories
   async getCategories() {
     return apiClient.get('/categories/admin/all');
