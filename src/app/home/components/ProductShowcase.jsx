@@ -68,7 +68,7 @@ export default function ProductShowcase() {
     e.stopPropagation();
     addItem(product, { quantity: 1 });
     toast.success(`${product.name} added to bag`);
-    router.push('/checkout');
+    router.push('/cart');
   };
 
   return (

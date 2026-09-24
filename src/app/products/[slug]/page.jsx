@@ -286,7 +286,7 @@ export default function ProductDetailPage() {
     e.stopPropagation();
     addItem(item, { quantity: 1 });
     toast.success(`${item.name} added to bag`);
-    router.push('/checkout');
+    router.push('/cart');
   };
 
   const goToImage = (index) => {

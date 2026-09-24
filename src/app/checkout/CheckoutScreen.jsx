@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { Minus, Plus, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import Header from '@/components/Header/Header';
 import Footer from '@/components/Footer/Footer';
@@ -39,7 +40,8 @@ const emptyForm = {
 export default function CheckoutScreen() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { items, totalItems, totalAmount, clearCart, hydrated } = useCart();
+  const { items, totalItems, totalAmount, updateQuantity, removeItem, clearCart, hydrated } =
+    useCart();
 
   const [form, setForm] = useState(emptyForm);
   const [paymentMethod, setPaymentMethod] = useState('prepaid');
@@ -642,7 +644,41 @@ export default function CheckoutScreen() {
                     </div>
                     <div className={styles.summaryItemInfo}>
                       <p className={styles.summaryItemName}>{item.name}</p>
-                      <p className={styles.summaryItemMeta}>Qty {item.quantity}</p>
+                      {(item.variantName || item.optionName) && (
+                        <p className={styles.summaryItemMeta}>
+                          {[item.variantName, item.optionName].filter(Boolean).join(' · ')}
+                        </p>
+                      )}
+                      <div className={styles.summaryItemActions}>
+                        <div className={styles.summaryQtyControl}>
+                          <button
+                            type="button"
+                            className={styles.summaryQtyBtn}
+                            onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                            aria-label="Decrease quantity"
+                            disabled={item.quantity <= 1}
+                          >
+                            <Minus size={12} />
+                          </button>
+                          <span className={styles.summaryQtyValue}>{item.quantity}</span>
+                          <button
+                            type="button"
+                            className={styles.summaryQtyBtn}
+                            onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                            aria-label="Increase quantity"
+                          >
+                            <Plus size={12} />
+                          </button>
+                        </div>
+                        <button
+                          type="button"
+                          className={styles.summaryRemoveBtn}
+                          onClick={() => removeItem(item.id)}
+                          aria-label={`Remove ${item.name}`}
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
                     </div>
                     <div className={styles.summaryItemPrice}>
                       {formatPrice(item.price * item.quantity)}
