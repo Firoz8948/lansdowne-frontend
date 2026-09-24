@@ -63,6 +63,12 @@ export default function ProductCard({
         : s.is_current,
   }));
 
+  const goToSwatch = (item) => {
+    setActiveSwatch(item);
+    const next = productColorHref(item);
+    if (next) router.push(next);
+  };
+
   return (
     <article
       className={`${styles.productCard} ${hasHoverImage ? styles.productCardHasHoverImg : ''} ${className}`.trim()}
@@ -104,20 +110,27 @@ export default function ProductCard({
             {hasDiscount && (
               <span className={styles.productMrp}>{formatPrice(product.mrp)}</span>
             )}
+          </div>
+        </Link>
+
+        {itemsWithSelection.length > 0 ? (
+          <div
+            className={styles.productSwatchRow}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+            }}
+          >
             <ColorSwatches
               items={itemsWithSelection}
               size="sm"
               align="right"
               stopPropagation
               onPreview={(item) => setActiveSwatch(item)}
-              onSelect={(item) => {
-                setActiveSwatch(item);
-                const next = productColorHref(item);
-                if (next) router.push(next);
-              }}
+              onSelect={goToSwatch}
             />
           </div>
-        </Link>
+        ) : null}
 
         {onAddToBag ? (
           <div className={styles.productCardActions}>

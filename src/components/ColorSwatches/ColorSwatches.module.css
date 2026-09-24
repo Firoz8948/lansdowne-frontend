@@ -26,6 +26,7 @@
   flex-shrink: 0;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
   position: relative;
+  z-index: 2;
   appearance: none;
   -webkit-appearance: none;
   overflow: hidden;
@@ -35,6 +36,8 @@
   line-height: 0;
   font-size: 0;
   color: transparent;
+  pointer-events: auto;
+  touch-action: manipulation;
 }
 
 .swatch:hover {

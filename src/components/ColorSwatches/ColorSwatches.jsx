@@ -107,7 +107,8 @@ export default function ColorSwatches({
               if (stopPropagation) e.stopPropagation();
               e.preventDefault();
               onPreview?.(item);
-              if (!selected) onSelect?.(item);
+              // Always fire select on click (hover may already mark it selected)
+              onSelect?.(item);
             }}
           />
         );

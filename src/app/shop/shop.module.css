@@ -285,6 +285,16 @@
   width: 100%;
 }
 
+.productSwatchRow {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  margin-top: 2px;
+  position: relative;
+  z-index: 3;
+  pointer-events: auto;
+}
+
 .productPrice {
   font-size: 0.95rem;
   font-weight: 700;
