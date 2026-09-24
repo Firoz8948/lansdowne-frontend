@@ -14,6 +14,11 @@ const VIDEO_REVIEWS = [
 
 const IMAGE_REVIEWS = [
   {
+    id: 'i-luke',
+    src: 'https://lansdowne-cdn.b-cdn.net/Reviews/luke%20kenny.webp',
+    caption: 'Visited by Luke Kenny',
+  },
+  {
     id: 'i2',
     src: 'https://lansdowne-cdn.b-cdn.net/Reviews/review_2.png',
     caption: 'Anupam Kher at our store',
