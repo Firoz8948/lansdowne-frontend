@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import Header from '@/components/Header/Header';
 import Footer from '@/components/Footer/Footer';
 import ShopNowButton from '@/components/ShopNowButton';
-import { useCart } from '@/context/CartContext';
+import { useCart, formatVariantLabel } from '@/context/CartContext';
 import { Minus, Plus, Trash2, ShoppingBag } from 'lucide-react';
 import styles from './cart.module.css';
 
@@ -81,12 +81,12 @@ export default function CartPage() {
                       <Link href={`/products/${item.slug}`} className={styles.itemName}>
                         {item.name}
                       </Link>
-                      {(item.variantName || item.optionName) && (
-                        <p className={styles.itemMeta}>
-                          {[item.variantName, item.optionName].filter(Boolean).join(' · ')}
-                        </p>
+                      {formatVariantLabel(item) && (
+                        <p className={styles.itemMeta}>{formatVariantLabel(item)}</p>
                       )}
-                      <p className={styles.itemPrice}>{formatPrice(item.price)}</p>
+                      <p className={styles.itemPrice}>
+                        {formatPrice(item.price * item.quantity)}
+                      </p>
 
                       <div className={styles.itemActions}>
                         <div className={styles.qtyControl}>
@@ -119,10 +119,6 @@ export default function CartPage() {
                           Remove
                         </button>
                       </div>
-                    </div>
-
-                    <div className={styles.itemSubtotal}>
-                      {formatPrice(item.price * item.quantity)}
                     </div>
                   </article>
                 ))}

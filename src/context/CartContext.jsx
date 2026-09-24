@@ -13,11 +13,89 @@ const resolveImageUrl = (url) => {
   return `${baseUrl}${url.startsWith('/') ? '' : '/'}${url}`;
 };
 
-export function buildCartItem(product, { quantity = 1, option = null, variantName = null } = {}) {
-  const optionId = option?.id ?? option?.name ?? 'default';
-  const price = option?.price ?? product.price;
-  const mrp = option?.mrp ?? product.mrp;
-  const image = resolveImageUrl(product.images?.[0] || product.image || null);
+/** Human-readable variant text for cart or order line items */
+export function formatVariantLabel(source) {
+  if (!source) return '';
+  if (typeof source === 'string') return source;
+  if (source.variantLabel) return source.variantLabel;
+  const vi = source.variant_info && typeof source.variant_info === 'object'
+    ? source.variant_info
+    : source;
+  if (vi?.label) return vi.label;
+  const sels = source.selections || vi?.selections;
+  if (Array.isArray(sels) && sels.length) {
+    return sels
+      .map((s) => [s.variant, s.option].filter(Boolean).join(': '))
+      .filter(Boolean)
+      .join(' · ');
+  }
+  return [source.variantName || vi?.variant, source.optionName || vi?.option]
+    .filter(Boolean)
+    .join(' · ');
+}
+
+function buildSelectionsLabel(selections) {
+  if (!Array.isArray(selections) || !selections.length) return null;
+  return selections
+    .map((s) => [s.variant, s.option].filter(Boolean).join(': '))
+    .filter(Boolean)
+    .join(' · ');
+}
+
+export function buildCartItem(
+  product,
+  { quantity = 1, option = null, variantName = null, selections = null } = {}
+) {
+  const sels = Array.isArray(selections)
+    ? selections
+        .filter((s) => s && (s.option || s.option_id))
+        .map((s) => ({
+          variant: s.variant || s.variantName || null,
+          option: s.option || s.optionName || null,
+          variant_id: s.variant_id ?? s.variantId ?? null,
+          option_id: s.option_id ?? s.optionId ?? null,
+          weight_grams:
+            s.weight_grams != null
+              ? Number(s.weight_grams)
+              : s.weight != null
+                ? Number(s.weight)
+                : null,
+          hex: s.hex || null,
+        }))
+    : [];
+
+  const primaryFromSels = sels.find((s) => /colou?r/i.test(s.variant || '')) || sels[0];
+  const resolvedOption = option || null;
+  const optionId =
+    sels.length > 0
+      ? sels.map((s) => s.option_id ?? s.option ?? 'x').join('_')
+      : resolvedOption?.id ?? resolvedOption?.name ?? 'default';
+
+  const price = resolvedOption?.price ?? product.price;
+  const mrp = resolvedOption?.mrp ?? product.mrp;
+  const optionImages = Array.isArray(resolvedOption?.images)
+    ? resolvedOption.images.filter(Boolean)
+    : [];
+  const image = resolveImageUrl(
+    optionImages[0] ||
+      resolvedOption?.image_url ||
+      product.images?.[0] ||
+      product.image ||
+      null
+  );
+
+  const variantLabel =
+    buildSelectionsLabel(sels) ||
+    [variantName, resolvedOption?.name].filter(Boolean).join(' · ') ||
+    null;
+
+  const weightFromSels = sels.find((s) => s.weight_grams != null)?.weight_grams;
+  const weight_grams =
+    weightFromSels != null
+      ? weightFromSels
+      : resolvedOption?.weight != null
+        ? Number(resolvedOption.weight)
+        : null;
 
   return {
     id: `${product.id}-${optionId}`,
@@ -28,8 +106,11 @@ export function buildCartItem(product, { quantity = 1, option = null, variantNam
     mrp: mrp != null ? Number(mrp) : null,
     image,
     quantity: Math.max(1, Number(quantity) || 1),
-    variantName: variantName || null,
-    optionName: option?.name || null,
+    variantName: variantName || primaryFromSels?.variant || null,
+    optionName: resolvedOption?.name || primaryFromSels?.option || null,
+    selections: sels,
+    variantLabel,
+    weight_grams,
   };
 }
 

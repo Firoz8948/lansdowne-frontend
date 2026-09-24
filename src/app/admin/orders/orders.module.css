@@ -55,6 +55,11 @@
   font-size: 0.9rem;
 }
 
+.itemVariant {
+  color: #64748b;
+  font-weight: 500;
+}
+
 @media (max-width: 640px) {
   .detailGrid {
     grid-template-columns: 1fr;

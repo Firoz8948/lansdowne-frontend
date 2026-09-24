@@ -22,6 +22,7 @@ import {
   buildCheckoutItems,
   submitPayuForm,
   loadRazorpayScript,
+  formatVariantLabel,
 } from './checkoutUtils';
 import styles from './checkout.module.css';
 
@@ -644,10 +645,8 @@ export default function CheckoutScreen() {
                     </div>
                     <div className={styles.summaryItemInfo}>
                       <p className={styles.summaryItemName}>{item.name}</p>
-                      {(item.variantName || item.optionName) && (
-                        <p className={styles.summaryItemMeta}>
-                          {[item.variantName, item.optionName].filter(Boolean).join(' · ')}
-                        </p>
+                      {formatVariantLabel(item) && (
+                        <p className={styles.summaryItemMeta}>{formatVariantLabel(item)}</p>
                       )}
                       <div className={styles.summaryItemActions}>
                         <div className={styles.summaryQtyControl}>

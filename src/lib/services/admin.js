@@ -36,6 +36,29 @@ export const adminService = {
     });
   },
 
+  /** Upload image(s) to storage (Bunny CDN when configured) without requiring a product id. */
+  async uploadLooseImages(files) {
+    const list = (Array.isArray(files) ? files : [files]).filter(Boolean);
+    const urls = [];
+    for (const file of list) {
+      const formData = new FormData();
+      formData.append('file', file);
+      const res = await apiClient.post('/admin/products/upload-image', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      if (res?.url) urls.push(res.url);
+    }
+    return { urls };
+  },
+
+  async attachProductImageUrls(productId, urls) {
+    return apiClient.post(`/admin/products/${productId}/images/from-urls`, { urls });
+  },
+
+  async getProductMediaLibrary(params = {}) {
+    return apiClient.get('/admin/media/product-images', { params });
+  },
+
   async removeProductImage(productId, imageUrl) {
     return apiClient.delete(`/admin/products/${productId}/images`, {
       params: { image_url: imageUrl },

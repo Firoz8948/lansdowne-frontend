@@ -45,7 +45,7 @@ export default function FeedsPage() {
       setLoading(true);
       const [feedData, productData] = await Promise.all([
         adminService.getVideoProducts(),
-        adminService.getAdminProducts({ limit: 200 }),
+        adminService.getAdminProducts({ limit: 100 }),
       ]);
       setFeeds(Array.isArray(feedData) ? feedData : []);
       const list = Array.isArray(productData?.products)
@@ -170,7 +170,7 @@ export default function FeedsPage() {
   return (
     <div className={productStyles.container}>
       <div className={productStyles.header}>
-        <div>
+    <div>
           <h1 className={productStyles.title}>Catalog Feeds</h1>
           <p className={productStyles.subtitle}>
             Upload videos, attach a product, and they appear on Watch & Shop.

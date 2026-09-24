@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { Suspense, useEffect, useMemo, useRef, useState } from 'react';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Header from '@/components/Header/Header';
 import Footer from '@/components/Footer/Footer';
@@ -9,6 +9,13 @@ import productService from '@/lib/services/products';
 import { useCart } from '@/context/CartContext';
 import toast from 'react-hot-toast';
 import { ArrowLeft, Minus, Plus, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
+import ColorSwatches, {
+  buildColorSwatchItems,
+  colorVariantOptions,
+  matchColorOption,
+  optionGalleryUrls,
+  productColorHref,
+} from '@/components/ColorSwatches/ColorSwatches';
 import styles from './pdp.module.css';
 import cardStyles from '@/app/home/home.module.css';
 
@@ -53,9 +60,31 @@ const DEFAULT_FAQS = [
 ];
 
 export default function ProductDetailPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className={styles.page}>
+          <Header />
+          <main className={styles.main}>
+            <div className={styles.inner}>
+              <div className={styles.loadingState}>Loading product…</div>
+            </div>
+          </main>
+          <Footer />
+        </div>
+      }
+    >
+      <ProductDetailPageInner />
+    </Suspense>
+  );
+}
+
+function ProductDetailPageInner() {
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const slug = params?.slug;
+  const colorParam = searchParams?.get('color');
   const { addItem } = useCart();
 
   const [product, setProduct] = useState(null);
@@ -94,6 +123,22 @@ export default function ProductDetailPage() {
             initial[variant.id ?? variant.name] = variant.options[0];
           }
         });
+
+        const colorVariant = (productData.variants || []).find((v) =>
+          /colou?r/i.test(v?.name || '')
+        );
+        // Prefer URL ?color= so card deep-links open the right variant
+        const param =
+          typeof window !== 'undefined'
+            ? new URLSearchParams(window.location.search).get('color')
+            : colorParam;
+        if (colorVariant?.options?.length && param) {
+          const matched = matchColorOption(colorVariant.options, param);
+          if (matched) {
+            initial[colorVariant.id ?? colorVariant.name] = matched;
+          }
+        }
+
         setSelectedOptions(initial);
         setActiveImage(0);
         setQty(1);
@@ -143,10 +188,42 @@ export default function ProductDetailPage() {
     };
   }, [slug]);
 
+  // Keep selection in sync when landing with / changing ?color=
+  useEffect(() => {
+    if (!product || !colorParam) return;
+    const colorVariant = (product.variants || []).find((v) =>
+      /colou?r/i.test(v?.name || '')
+    );
+    if (!colorVariant?.options?.length) return;
+    const matched = matchColorOption(colorVariant.options, colorParam);
+    if (!matched) return;
+    const key = colorVariant.id ?? colorVariant.name;
+    setSelectedOptions((prev) => {
+      const current = prev[key];
+      if (
+        current &&
+        ((current.id != null && current.id === matched.id) ||
+          current.name === matched.name)
+      ) {
+        return prev;
+      }
+      return { ...prev, [key]: matched };
+    });
+    setActiveImage(0);
+  }, [product, colorParam]);
+
   const activeOption = useMemo(() => {
+    if (!product) return null;
+    const colorVariant = (product.variants || []).find((v) =>
+      /colou?r/i.test(v?.name || '')
+    );
+    if (colorVariant) {
+      const key = colorVariant.id ?? colorVariant.name;
+      if (selectedOptions[key]) return selectedOptions[key];
+    }
     const options = Object.values(selectedOptions);
     return options.length ? options[options.length - 1] : null;
-  }, [selectedOptions]);
+  }, [product, selectedOptions]);
 
   const displayPrice = activeOption?.price ?? product?.price;
   const displayMrp = activeOption?.mrp ?? product?.mrp;
@@ -156,9 +233,22 @@ export default function ProductDetailPage() {
     displayMrp != null && Number(displayMrp) > Number(displayPrice);
 
   const images = useMemo(() => {
-    const list = (product?.images || []).map(resolveImageUrl).filter(Boolean);
-    return list.length ? list : [null];
-  }, [product]);
+    const productImgs = (product?.images || []).map(resolveImageUrl).filter(Boolean);
+    const variants = product?.variants || [];
+    const colorVariant = variants.find((v) => /colou?r/i.test(v?.name || ''));
+    if (colorVariant) {
+      const key = colorVariant.id ?? colorVariant.name;
+      const gallery = optionGalleryUrls(selectedOptions[key])
+        .map(resolveImageUrl)
+        .filter(Boolean);
+      if (gallery.length) return gallery;
+    }
+    for (const opt of Object.values(selectedOptions || {})) {
+      const gallery = optionGalleryUrls(opt).map(resolveImageUrl).filter(Boolean);
+      if (gallery.length) return gallery;
+    }
+    return productImgs.length ? productImgs : [null];
+  }, [product, selectedOptions]);
 
   useEffect(() => {
     const mq = window.matchMedia('(max-width: 900px)');
@@ -258,16 +348,39 @@ export default function ProductDetailPage() {
   const selectOption = (variantKey, option) => {
     setSelectedOptions((prev) => ({ ...prev, [variantKey]: option }));
     setQty(1);
+    setActiveImage(0);
   };
 
   const getSelectedVariantMeta = () => {
     const variants = product?.variants || [];
-    if (!variants.length) return { option: null, variantName: null };
+    if (!variants.length) {
+      return { option: null, variantName: null, selections: [] };
+    }
 
-    const firstVariant = variants[0];
-    const variantKey = firstVariant.id ?? firstVariant.name;
-    const option = selectedOptions[variantKey] || firstVariant.options?.[0] || null;
-    return { option, variantName: firstVariant.name || null };
+    const selections = [];
+    variants.forEach((variant) => {
+      const key = variant.id ?? variant.name;
+      const option = selectedOptions[key] || variant.options?.[0] || null;
+      if (!option) return;
+      selections.push({
+        variant: variant.name || null,
+        option: option.name || null,
+        variant_id: variant.id ?? null,
+        option_id: option.id ?? null,
+        weight_grams: option.weight != null ? Number(option.weight) : null,
+        hex: option.hex || null,
+      });
+    });
+
+    const colorVariant = variants.find((v) => /colou?r/i.test(v?.name || ''));
+    const primary = colorVariant || variants[0];
+    const variantKey = primary.id ?? primary.name;
+    const option = selectedOptions[variantKey] || primary.options?.[0] || null;
+    return {
+      option,
+      variantName: primary.name || null,
+      selections,
+    };
   };
 
   const handleAddToBag = () => {
@@ -275,8 +388,8 @@ export default function ProductDetailPage() {
       toast.error('This product is out of stock');
       return;
     }
-    const { option, variantName } = getSelectedVariantMeta();
-    addItem(product, { quantity: qty, option, variantName });
+    const { option, variantName, selections } = getSelectedVariantMeta();
+    addItem(product, { quantity: qty, option, variantName, selections });
     toast.success(`${product.name} added to bag`);
     router.push('/cart');
   };
@@ -440,7 +553,85 @@ export default function ProductDetailPage() {
                     </p>
                   </div>
 
+                  {(() => {
+                    const swatchItems = buildColorSwatchItems(product);
+                    if (!swatchItems.length) return null;
+
+                    const colorOpts = colorVariantOptions(product);
+                    const colorVariant = (product.variants || []).find((v) =>
+                      /colou?r/i.test(v?.name || '')
+                    );
+                    const colorKey = colorVariant
+                      ? colorVariant.id ?? colorVariant.name
+                      : null;
+                    const selectedColor = colorKey ? selectedOptions[colorKey] : null;
+
+                    const itemsWithSelection = swatchItems.map((item, index) => {
+                      if (colorOpts.length && item.option_id != null && selectedColor) {
+                        return {
+                          ...item,
+                          is_current:
+                            selectedColor.id != null
+                              ? selectedColor.id === item.option_id
+                              : selectedColor.name === item.name,
+                        };
+                      }
+                      if (colorOpts.length && !selectedColor) {
+                        return { ...item, is_current: index === 0 };
+                      }
+                      return item;
+                    });
+
+                    const current = itemsWithSelection.find((s) => s.is_current);
+                    const label =
+                      current?.name ||
+                      (current?.colors || [])
+                        .map((c) => c.name || c.hex)
+                        .filter(Boolean)
+                        .join(' / ');
+
+                    return (
+                      <div className={styles.variantBlock}>
+                        <div className={styles.variantLabel}>
+                          Color{label ? `: ${label}` : ''}
+                        </div>
+                        <ColorSwatches
+                          items={itemsWithSelection}
+                          size="lg"
+                          onSelect={(item) => {
+                            if (item?.slug && item.slug !== product.slug) {
+                              router.push(productColorHref(item) || `/products/${item.slug}`);
+                              return;
+                            }
+                            if (colorKey && colorOpts.length) {
+                              const opt = colorOpts.find(
+                                (o) =>
+                                  (item.option_id != null && o.id === item.option_id) ||
+                                  o.name === item.name
+                              );
+                              if (opt) {
+                                selectOption(colorKey, opt);
+                                const href = productColorHref({
+                                  slug: product.slug,
+                                  option_id: opt.id,
+                                  name: opt.name,
+                                  id: opt.id ?? `${product.id}-color`,
+                                });
+                                if (href) {
+                                  router.replace(href, { scroll: false });
+                                }
+                              }
+                            }
+                          }}
+                        />
+                      </div>
+                    );
+                  })()}
+
                   {(product.variants || []).map((variant) => {
+                    // Color radios are rendered above via ColorSwatches
+                    if (/colou?r/i.test(variant.name || '')) return null;
+
                     const variantKey = variant.id ?? variant.name;
                     const selected = selectedOptions[variantKey];
                     return (
@@ -662,6 +853,16 @@ export default function ProductDetailPage() {
                                     {formatPrice(item.mrp)}
                                   </span>
                                 )}
+                                <ColorSwatches
+                                  items={buildColorSwatchItems(item)}
+                                  size="sm"
+                                  align="right"
+                                  stopPropagation
+                                  onSelect={(sib) => {
+                                    const href = productColorHref(sib);
+                                    if (href) router.push(href);
+                                  }}
+                                />
                               </div>
                             </Link>
 

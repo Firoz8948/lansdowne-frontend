@@ -176,7 +176,11 @@ export default function AdminProductsPage() {
                           </div>
                         </div>
                       </td>
-                      <td className={styles.td}>{product.category || '—'}</td>
+                      <td className={styles.td}>
+                        {Array.isArray(product.categories) && product.categories.length
+                          ? product.categories.map((c) => c.name).join(', ')
+                          : product.category || '—'}
+                      </td>
                       <td className={styles.td}>
                         <span className={styles.priceCell}>
                           {formatPrice(product.price)}

@@ -7,6 +7,10 @@ import { ArrowRight } from 'lucide-react';
 import productService from '@/lib/services/products';
 import { useCart } from '@/context/CartContext';
 import toast from 'react-hot-toast';
+import ColorSwatches, {
+  buildColorSwatchItems,
+  productColorHref,
+} from '@/components/ColorSwatches/ColorSwatches';
 import styles from '../home.module.css';
 
 const resolveImageUrl = (url) => {
@@ -145,6 +149,16 @@ export default function ProductShowcase() {
                       {hasDiscount && (
                         <span className={styles.productMrp}>{formatPrice(product.mrp)}</span>
                       )}
+                      <ColorSwatches
+                        items={buildColorSwatchItems(product)}
+                        size="sm"
+                        align="right"
+                        stopPropagation
+                        onSelect={(item) => {
+                          const href = productColorHref(item);
+                          if (href) router.push(href);
+                        }}
+                      />
                     </div>
                   </Link>
 

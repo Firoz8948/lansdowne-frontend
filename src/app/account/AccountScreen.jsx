@@ -10,7 +10,7 @@ import Footer from '@/components/Footer/Footer';
 import ShopNowButton from '@/components/ShopNowButton';
 import authService from '@/lib/services/auth';
 import orderService from '@/lib/services/orders';
-import { INDIAN_STATES, formatPrice, digitsOnly } from '@/app/checkout/checkoutUtils';
+import { INDIAN_STATES, formatPrice, digitsOnly, formatVariantLabel } from '@/app/checkout/checkoutUtils';
 import styles from './account.module.css';
 
 function displayEmail(email) {
@@ -492,7 +492,12 @@ export default function AccountScreen() {
                           {order.items?.length > 0 && (
                             <p className={styles.orderItems}>
                               {order.items
-                                .map((item) => `${item.name} × ${item.quantity}`)
+                                .map((item) => {
+                                  const variantText = formatVariantLabel(item);
+                                  return `${item.name}${
+                                    variantText ? ` (${variantText})` : ''
+                                  } × ${item.quantity}`;
+                                })
                                 .join(', ')}
                             </p>
                           )}

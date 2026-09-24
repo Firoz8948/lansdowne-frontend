@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { Package, X } from 'lucide-react';
 import adminService from '@/lib/services/admin';
+import { formatVariantLabel } from '@/app/checkout/checkoutUtils';
 import productStyles from '../products/products.module.css';
 import styles from './orders.module.css';
 
@@ -230,14 +231,20 @@ export default function AdminOrdersPage() {
                 Items
               </h4>
               <div className={styles.itemsList}>
-                {(selected.items || []).map((item, idx) => (
-                  <div key={idx} className={styles.itemRow}>
-                    <span>
-                      {item.name} × {item.quantity}
-                    </span>
-                    <span>{formatPrice(item.price * item.quantity)}</span>
-                  </div>
-                ))}
+                {(selected.items || []).map((item, idx) => {
+                  const variantText = formatVariantLabel(item);
+                  return (
+                    <div key={idx} className={styles.itemRow}>
+                      <span>
+                        {item.name} × {item.quantity}
+                        {variantText ? (
+                          <span className={styles.itemVariant}> — {variantText}</span>
+                        ) : null}
+                      </span>
+                      <span>{formatPrice(item.price * item.quantity)}</span>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>

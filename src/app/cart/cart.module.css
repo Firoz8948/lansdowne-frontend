@@ -113,7 +113,7 @@
 
 .cartItem {
   display: grid;
-  grid-template-columns: 112px minmax(0, 1fr) auto;
+  grid-template-columns: 112px minmax(0, 1fr);
   gap: 18px;
   padding: 20px;
   border-bottom: 1px solid #e2e8f0;
@@ -243,13 +243,6 @@
   color: #b91c1c;
 }
 
-.itemSubtotal {
-  font-weight: 700;
-  font-size: 1rem;
-  white-space: nowrap;
-  padding-top: 4px;
-}
-
 .summaryPanel {
   border: 1px solid #e2e8f0;
   padding: 24px;
@@ -327,10 +320,5 @@
   .itemImageLink {
     width: 88px;
     height: 88px;
-  }
-
-  .itemSubtotal {
-    grid-column: 2;
-    padding-top: 0;
   }
 }
