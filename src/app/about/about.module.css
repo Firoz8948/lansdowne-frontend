@@ -178,4 +178,44 @@
   .whyGrid {
     grid-template-columns: 1fr;
   }
+
+  .valuesSection {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .valuesSection .sectionHeader {
+    padding-left: var(--gutter-inline);
+    padding-right: var(--gutter-inline);
+  }
+
+  .valuesGrid {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 12px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+    padding: 4px var(--gutter-inline) 12px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .valuesGrid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .valueCard {
+    flex: 0 0 min(78vw, 280px);
+    width: min(78vw, 280px);
+    max-width: min(78vw, 280px);
+    scroll-snap-align: start;
+    transform: none;
+  }
+
+  .valueCard:hover {
+    transform: none;
+  }
 }

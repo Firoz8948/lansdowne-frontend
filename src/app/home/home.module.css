@@ -469,6 +469,7 @@
   padding-left: clamp(16px, 2vw, 32px);
   padding-right: clamp(16px, 2vw, 32px);
   padding-top: var(--section-space-y);
+  padding-bottom: 0;
 }
 
 .productGrid {
@@ -678,54 +679,266 @@
 }
 
 /* ================= WHY CHOOSE US ================= */
-.featuresGrid {
+.featuresSection {
+  max-width: 100%;
+  width: 100%;
+  padding-left: clamp(16px, 2vw, 32px);
+  padding-right: clamp(16px, 2vw, 32px);
+  padding-top: var(--section-space-y);
+  padding-bottom: 0;
+  overflow: hidden;
+}
+
+.principlesList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
-  gap: clamp(16px, 2vw, 28px);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
 }
 
-.featureCard {
-  background: #ffffff;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  padding: clamp(24px, 2.5vw, 32px) clamp(20px, 2vw, 28px);
-  transition: all var(--transition-normal);
+.principleItem {
+  padding: clamp(28px, 3.5vw, 40px) clamp(20px, 2.5vw, 32px);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
 }
 
-.featureCard:hover {
-  border-color: #cbd5e1;
-  box-shadow: var(--shadow-md);
-  transform: translateY(-3px);
+.principleItem:last-child {
+  border-right: none;
 }
 
-.featureIconWrapper {
-  width: 52px;
-  height: 52px;
-  border-radius: var(--radius-md);
-  background: var(--accent-subtle);
+.principleNum {
+  font-family: var(--font-family-heading);
+  font-size: clamp(0.75rem, 1vw, 0.85rem);
+  letter-spacing: 0.14em;
   color: var(--accent);
+  line-height: 1;
+}
+
+.principleTitle {
+  font-family: var(--font-family-heading);
+  font-size: clamp(1.35rem, 2vw, 1.75rem);
+  font-weight: 400;
+  color: var(--text-main);
+  margin: 0;
+  letter-spacing: 0.02em;
+  line-height: 1.15;
+}
+
+.principleDesc {
+  margin: 0;
+  font-size: clamp(0.9rem, 1.1vw, 0.98rem);
+  color: var(--text-muted);
+  line-height: 1.55;
+  max-width: 28ch;
+}
+
+/* ================= REVIEWS ================= */
+.reviewsSection {
+  max-width: 100%;
+  width: 100%;
+  padding-left: clamp(16px, 2vw, 32px);
+  padding-right: clamp(16px, 2vw, 32px);
+  padding-top: var(--section-space-y);
+  overflow: hidden;
+  padding-bottom: clamp(28px, 4vw, 40px);
+}
+
+.reviewCaption {
+  margin: 12px 0 0;
+  font-size: clamp(0.85rem, 1vw, 0.95rem);
+  color: var(--text-muted);
+  line-height: 1.45;
+  text-align: center;
+  max-width: 36ch;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.reviewVideoCarousel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+}
+
+.reviewVideoViewport {
+  width: min(100%, 420px);
+  overflow: hidden;
+}
+
+.reviewVideoTrack {
+  display: flex;
+  transition: transform 0.45s ease;
+  will-change: transform;
+}
+
+.reviewVideoSlide {
+  flex: 0 0 100%;
+  min-width: 100%;
+}
+
+.reviewVideoCard {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.reviewVideoFrame {
+  width: 100%;
+  aspect-ratio: 9 / 16;
+  max-height: min(68vh, 560px);
+  background: #0f172a;
+  border: 1px solid var(--border, #e2e8f0);
+  overflow: hidden;
+  position: relative;
+}
+
+.reviewVideo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.reviewVideoControls {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.4rem;
-  margin-bottom: 20px;
+  gap: 14px;
 }
 
-.featureTitle {
-  font-size: var(--text-h3);
-  font-weight: 700;
-  margin-bottom: 8px;
+.reviewNavBtn {
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border, #e2e8f0);
+  background: #ffffff;
   color: var(--text-main);
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
 }
 
-.featureDesc {
-  font-size: var(--text-body);
-  color: var(--text-muted);
-  line-height: 1.6;
+.reviewNavBtn:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
 }
 
-.featuresSection {
+.reviewDots {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.reviewDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: none;
+  padding: 0;
+  background: #cbd5e1;
+  cursor: pointer;
+}
+
+.reviewDotActive {
+  background: #0f172a;
+}
+
+.reviewMarquee {
+  width: 100%;
   overflow: hidden;
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 6%,
+    #000 94%,
+    transparent
+  );
+}
+
+.reviewMarqueeTrack {
+  display: flex;
+  width: max-content;
+  gap: clamp(18px, 2.5vw, 28px);
+  padding: 12px 0 8px;
+  animation: reviewMarqueeRtl 48s linear infinite;
+  will-change: transform;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .reviewMarqueeTrack:hover {
+    animation-play-state: paused;
+  }
+}
+
+.reviewImageCard {
+  margin: 0;
+  flex: 0 0 auto;
+  width: min(220px, 58vw);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.reviewImageFrame {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  background: #f3eee8;
+  border: 1px solid var(--border, #e2e8f0);
+  overflow: hidden;
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
+}
+
+.reviewImageTiltLeft .reviewImageFrame {
+  transform: rotate(-7deg);
+  transform-origin: center center;
+}
+
+.reviewImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.reviewImageCard .reviewCaption {
+  max-width: 100%;
+  margin-top: 14px;
+  font-size: 0.82rem;
+}
+
+@keyframes reviewMarqueeRtl {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reviewMarqueeTrack {
+    animation: none;
+    flex-wrap: wrap;
+    width: 100%;
+    max-width: var(--container-2xl);
+    margin: 0 auto;
+    padding-inline: var(--gutter-inline);
+    justify-content: center;
+  }
+
+  .reviewVideoTrack {
+    transition: none;
+  }
 }
 
 /* ================= VIP NEWSLETTER SECTION ================= */
@@ -798,6 +1011,18 @@
 
 /* ================= BREAKPOINT MEDIA QUERIES ================= */
 @media (max-width: 1024px) {
+  .principlesList {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .principleItem:nth-child(2n) {
+    border-right: none;
+  }
+
+  .principleItem:nth-child(n + 3) {
+    border-top: 1px solid var(--border);
+  }
+
   .heroSection {
     grid-template-columns: 1fr;
     grid-template-rows: auto auto;
@@ -874,45 +1099,76 @@
     padding-right: clamp(16px, 4vw, 24px);
   }
 
-  .featuresSection {
+  .featuresSection,
+  .section.featuresSection {
     padding-left: 0;
     padding-right: 0;
     overflow: visible;
   }
 
-  .featuresSection .sectionHeader {
+  .reviewsSection,
+  .section.reviewsSection {
+    margin-top: 48px;
+    padding-top: 0;
+    padding-left: 0;
+    padding-right: 0;
+    overflow: visible;
+  }
+
+  .featuresSection .sectionHeader,
+  .reviewsSection .sectionHeader {
     padding-left: clamp(16px, 4vw, 24px);
     padding-right: clamp(16px, 4vw, 24px);
   }
 
-  .featuresGrid {
+  .principlesList {
     display: flex;
     flex-wrap: nowrap;
-    gap: 12px;
+    gap: 0;
+    grid-template-columns: none;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
     overflow-x: auto;
     overflow-y: hidden;
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior-x: contain;
-    padding: 4px clamp(16px, 4vw, 24px) 12px;
+    padding: 0 0 0 clamp(16px, 4vw, 24px);
     scrollbar-width: none;
     -ms-overflow-style: none;
   }
 
-  .featuresGrid::-webkit-scrollbar {
+  .principlesList::-webkit-scrollbar {
     display: none;
   }
 
-  .featureCard {
-    flex: 0 0 min(78vw, 280px);
-    width: min(78vw, 280px);
-    max-width: min(78vw, 280px);
+  .principleItem,
+  .principleItem:nth-child(n),
+  .principleItem:nth-child(2n),
+  .principleItem:nth-child(n + 3) {
+    flex: 0 0 min(72vw, 260px);
+    width: min(72vw, 260px);
+    max-width: min(72vw, 260px);
+    border: none;
+    border-right: 1px solid var(--border);
+    border-top: none;
+    padding: 22px 20px;
     scroll-snap-align: start;
-    transform: none;
   }
 
-  .featureCard:hover {
-    transform: none;
+  .principleItem:last-child {
+    border-bottom: none;
+    border-right: 1px solid var(--border);
+    margin-right: clamp(16px, 4vw, 24px);
+  }
+
+  .principleDesc {
+    max-width: none;
+  }
+
+  .reviewMarquee {
+    padding-left: 0;
+    padding-right: 0;
   }
 
   .productGrid {

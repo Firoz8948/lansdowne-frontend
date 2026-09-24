@@ -7,7 +7,7 @@ import { Shield, Gem, Leaf, Heart } from 'lucide-react';
 export const metadata = {
   title: 'About Us | Lansdowne',
   description:
-    'Discover the story behind Lansdowne — a premium Indian brand committed to quality craftsmanship, timeless design, and everyday distinction.',
+    'Handpicked leather goods from the hills of Uttarakhand. Born in Lansdowne, inspired by mountains, crafted for everyday journeys.',
 };
 
 const values = [
@@ -49,15 +49,13 @@ export default function AboutPage() {
             <h2 className={styles.sectionTitle}>OUR STORY</h2>
             <p className={styles.sectionSubtitle}>The Story Behind Our Craft</p>
           </div>
+
           <div className={styles.storyContent}>
             <p className={styles.paragraph}>
-              Lansdowne was born from a simple belief: premium quality should not come at a premium price. Founded with the vision of making elegant, well-crafted products accessible to the discerning Indian consumer, we set out to bridge the gap between luxury and everyday living.
+              Handpicked leather goods from the hills of Uttarakhand.
             </p>
             <p className={styles.paragraph}>
-              What started as a small, passionate endeavour has grown into a curated destination for those who appreciate the finer details — the weight of a well-made product, the precision of its stitching, the richness of its finish. Every item in our collection is handpicked to meet exacting standards of material quality, durability, and design sophistication.
-            </p>
-            <p className={styles.paragraph}>
-              Our name draws inspiration from the serene hill station of Lansdowne in Uttarakhand — a place known for its timeless charm, understated beauty, and enduring character. Like the town itself, our brand stands for quiet confidence, lasting appeal, and an unwavering commitment to excellence.
+              Born in Lansdowne, Uttarakhand. Inspired by mountains. Crafted for everyday journeys.
             </p>
           </div>
         </section>

@@ -52,7 +52,7 @@ export default function RefundPolicyPage() {
           <div className={styles.steps}>
             <div className={styles.step}>
               <span className={styles.stepNumber}>1</span>
-              <span className={styles.stepText}>Contact our support team at <strong>support@lansdowne.in</strong> or call <strong>+91 98765 43210</strong> with your order number and reason for return.</span>
+              <span className={styles.stepText}>Contact our support team at <strong>lansdowneleather1@gmail.com</strong> or call <strong>+91 89795 43500</strong> with your order number and reason for return.</span>
             </div>
             <div className={styles.step}>
               <span className={styles.stepNumber}>2</span>
@@ -104,8 +104,8 @@ export default function RefundPolicyPage() {
             For any return or refund-related queries, please reach out to us:
           </p>
           <ul className={styles.list}>
-            <li><strong>Email:</strong> support@lansdowne.in</li>
-            <li><strong>Phone:</strong> +91 98765 43210</li>
+            <li><strong>Email:</strong> lansdowneleather1@gmail.com</li>
+            <li><strong>Phone:</strong> +91 89795 43500</li>
             <li><strong>Hours:</strong> Mon – Sat, 10:00 AM – 7:00 PM IST</li>
           </ul>
         </div>

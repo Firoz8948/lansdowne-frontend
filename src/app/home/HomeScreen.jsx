@@ -6,6 +6,7 @@ import {
   CategoryShowcase,
   ProductShowcase,
   WhyChooseUs,
+  ReviewsShowcase,
   Newsletter,
 } from './components';
 
@@ -18,6 +19,7 @@ export default function HomeScreen() {
         <CategoryShowcase />
         <ProductShowcase />
         <WhyChooseUs />
+        <ReviewsShowcase />
         <Newsletter />
       </main>
       <Footer />

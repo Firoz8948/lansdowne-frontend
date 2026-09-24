@@ -14,13 +14,13 @@ const contactInfo = [
   {
     icon: Mail,
     label: 'Email Support',
-    value: 'support@lansdowne.in',
+    value: 'lansdowneleather1@gmail.com',
     extra: 'We typically respond within 24 hours',
   },
   {
     icon: Phone,
     label: 'Customer Helpline',
-    value: '+91 98765 43210',
+    value: '+91 89795 43500',
     extra: 'Available during business hours',
   },
   {
@@ -32,8 +32,8 @@ const contactInfo = [
   {
     icon: MapPin,
     label: 'Registered Office',
-    value: 'Lansdowne Lifestyle Pvt. Ltd.',
-    extra: 'New Delhi, India — 110001',
+    value: 'JBS and Co',
+    extra: 'Sadar Bazaar, Lansdowne, Uttarakhand, 246155',
   },
 ];
 

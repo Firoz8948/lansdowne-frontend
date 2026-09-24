@@ -86,7 +86,7 @@ export default function PrivacyPolicyPage() {
             <li>Request a copy of your data in a portable format</li>
           </ul>
           <p className={styles.paragraph}>
-            To exercise any of these rights, please contact us at <strong>support@lansdowne.in</strong>.
+            To exercise any of these rights, please contact us at <strong>lansdowneleather1@gmail.com</strong>.
           </p>
 
           <h2 className={styles.sectionHeading}>8. Policy Updates</h2>
@@ -95,7 +95,7 @@ export default function PrivacyPolicyPage() {
           </p>
 
           <div className={styles.highlightBox}>
-            <p>If you have any questions about this Privacy Policy, please contact us at <strong>support@lansdowne.in</strong> or call <strong>+91 98765 43210</strong>.</p>
+            <p>If you have any questions about this Privacy Policy, please contact us at <strong>lansdowneleather1@gmail.com</strong> or call <strong>+91 89795 43500</strong>.</p>
           </div>
         </div>
       </main>

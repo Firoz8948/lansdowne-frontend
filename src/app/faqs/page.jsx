@@ -59,7 +59,7 @@ const faqGroups = [
       },
       {
         q: 'How do I initiate a return?',
-        a: 'Contact our support team at support@lansdowne.in or call +91 98765 43210 with your order number. Once approved, our courier partner will schedule a pickup from your delivery address within 2–3 business days.',
+        a: 'Contact our support team at lansdowneleather1@gmail.com or call +91 89795 43500 with your order number. Once approved, our courier partner will schedule a pickup from your delivery address within 2–3 business days.',
       },
       {
         q: 'When will I receive my refund?',

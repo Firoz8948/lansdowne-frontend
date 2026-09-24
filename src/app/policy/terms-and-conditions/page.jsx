@@ -78,8 +78,8 @@ export default function TermsAndConditionsPage() {
             For any questions or concerns regarding these Terms and Conditions, please reach out to us:
           </p>
           <ul className={styles.list}>
-            <li><strong>Email:</strong> support@lansdowne.in</li>
-            <li><strong>Phone:</strong> +91 98765 43210</li>
+            <li><strong>Email:</strong> lansdowneleather1@gmail.com</li>
+            <li><strong>Phone:</strong> +91 89795 43500</li>
             <li><strong>Address:</strong> Lansdowne Lifestyle Pvt. Ltd., New Delhi, India — 110001</li>
           </ul>
         </div>
