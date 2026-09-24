@@ -65,6 +65,10 @@ export const adminService = {
     });
   },
 
+  async reorderProductImages(productId, urls) {
+    return apiClient.put(`/admin/products/${productId}/images/reorder`, { urls });
+  },
+
   async getMetafieldDefinitions() {
     return apiClient.get('/metafields/admin/all');
   },

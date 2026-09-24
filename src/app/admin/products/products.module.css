@@ -696,6 +696,13 @@
   align-items: center;
 }
 
+.optionImagesThumbsInner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
 .optionImageThumb {
   position: relative;
   width: 52px;
@@ -855,6 +862,11 @@
   overflow: hidden;
   border: 1px solid #e2e8f0;
   background: #f1f5f9;
+  cursor: grab;
+}
+
+.imagePreviewItem:active {
+  cursor: grabbing;
 }
 
 .imagePreviewItem img {

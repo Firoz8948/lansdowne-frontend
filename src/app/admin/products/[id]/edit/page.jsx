@@ -14,6 +14,7 @@ import {
 import adminService from '@/lib/services/admin';
 import ProductColorEditor from '@/components/ProductColorEditor/ProductColorEditor';
 import ImageLibraryPicker from '@/components/ImageLibraryPicker/ImageLibraryPicker';
+import SortableImageThumbs from '@/components/SortableImageThumbs/SortableImageThumbs';
 import styles from '../../products.module.css';
 
 const emptyOption = () => ({
@@ -277,18 +278,14 @@ export default function EditProductPage() {
           options: v.options.map((opt, j) => {
             if (j !== optionIndex) return opt;
             const next = { ...opt, ...patch };
-            // Keep nested colors[0].name aligned with Option label
+            // Keep nested colors[0].name aligned with Option label (single-color only)
             if (
               /colou?r/i.test(v.name || '') &&
               patch.name != null &&
               Array.isArray(next.colors) &&
-              next.colors.length
+              next.colors.length === 1
             ) {
-              next.colors = next.colors.map((c, ci) =>
-                ci === 0 || next.colors.length === 1
-                  ? { ...c, name: patch.name }
-                  : c
-              );
+              next.colors = next.colors.map((c) => ({ ...c, name: patch.name }));
             }
             return next;
           }),
@@ -333,10 +330,9 @@ export default function EditProductPage() {
                 ? o.colors
                     .filter((c) => c.hex)
                     .map((c, i) => ({
-                      // Option label wins for single-color (avoids stale "Black")
                       name: (
-                        (o.colors.length === 1 || i === 0
-                          ? o.name
+                        (o.colors.length === 1
+                          ? o.name || c.name
                           : c.name || o.name) || ''
                       ).trim(),
                       hex: c.hex,
@@ -448,13 +444,17 @@ export default function EditProductPage() {
   const allPreviews = [
     ...existingImages.map((img, index) => ({
       key: `existing-${img.url}`,
+      kind: 'existing',
+      url: img.url,
       src: img.preview,
       isMain: index === 0 && imagePreviews.length === 0,
       onRemove: () => removeExistingImage(index),
     })),
     ...imagePreviews.map((src, index) => ({
       key: `new-${src}-${index}`,
+      kind: 'new',
       src,
+      file: imageFiles[index],
       isMain: existingImages.length === 0 && index === 0,
       onRemove: () => removeNewImage(index),
     })),
@@ -511,7 +511,8 @@ export default function EditProductPage() {
           <section className={styles.formSection}>
             <h2 className={styles.sectionTitle}>Product Images</h2>
             <p className={styles.sectionHint}>
-              Square images recommended (1:1 ratio). First image = main image.
+              Square images recommended (1:1 ratio). Drag to reorder — first image =
+              main image.
             </p>
 
             <div
@@ -547,24 +548,54 @@ export default function EditProductPage() {
             </div>
 
             {allPreviews.length > 0 && (
-              <div className={styles.imagePreviewGrid}>
-                {allPreviews.map((item, index) => (
-                  <div key={item.key} className={styles.imagePreviewItem}>
-                    <img src={item.src} alt={`Product preview ${index + 1}`} />
-                    {(item.isMain || index === 0) && (
-                      <span className={styles.imageMainBadge}>Main</span>
-                    )}
-                    <button
-                      type="button"
-                      className={styles.imageRemoveBtn}
-                      onClick={item.onRemove}
-                      aria-label="Remove image"
-                    >
-                      <X size={12} />
-                    </button>
-                  </div>
-                ))}
-              </div>
+              <SortableImageThumbs
+                className={styles.imagePreviewGrid}
+                itemClassName={styles.imagePreviewItem}
+                mainBadgeClassName={styles.imageMainBadge}
+                removeClassName={styles.imageRemoveBtn}
+                items={allPreviews}
+                onRemove={(_index, item) => {
+                  if (item?.kind === 'existing') {
+                    const i = existingImages.findIndex((e) => e.url === item.url);
+                    if (i >= 0) removeExistingImage(i);
+                  } else if (item?.kind === 'new') {
+                    const i = imagePreviews.findIndex((src) => src === item.src);
+                    if (i >= 0) removeNewImage(i);
+                  }
+                }}
+                onReorder={async (next) => {
+                  const nextExisting = [];
+                  const nextNewPreviews = [];
+                  const nextNewFiles = [];
+                  const fileBySrc = new Map(
+                    imagePreviews.map((src, i) => [src, imageFiles[i]])
+                  );
+                  next.forEach((item) => {
+                    if (item.kind === 'existing') {
+                      nextExisting.push({
+                        url: item.url,
+                        preview: item.src,
+                      });
+                    } else if (item.kind === 'new') {
+                      nextNewPreviews.push(item.src);
+                      nextNewFiles.push(item.file || fileBySrc.get(item.src));
+                    }
+                  });
+                  setExistingImages(nextExisting);
+                  setImagePreviews(nextNewPreviews);
+                  setImageFiles(nextNewFiles.filter(Boolean));
+                  try {
+                    if (nextExisting.length) {
+                      await adminService.reorderProductImages(
+                        productId,
+                        nextExisting.map((e) => e.url)
+                      );
+                    }
+                  } catch (err) {
+                    toast.error(err.message || 'Failed to save image order');
+                  }
+                }}
+              />
             )}
 
             <button
@@ -756,30 +787,39 @@ export default function EditProductPage() {
                         )}
                         <div className={styles.optionImagesRow}>
                           <span className={styles.optionImagesLabel}>
-                            Photos for this option
+                            Photos for this option — drag to reorder (first = main)
                           </span>
                           <div className={styles.optionImagesThumbs}>
-                            {(opt.images || []).map((url, imgIndex) => (
-                              <div key={`${url}-${imgIndex}`} className={styles.optionImageThumb}>
-                                <img src={resolveImageUrl(url)} alt="" />
-                                <button
-                                  type="button"
-                                  className={styles.optionImageRemove}
-                                  aria-label="Remove photo"
-                                  onClick={() => {
-                                    const next = (opt.images || []).filter(
-                                      (_, i) => i !== imgIndex
-                                    );
-                                    updateOption(vIndex, oIndex, {
-                                      images: next,
-                                      image_url: next[0] || '',
-                                    });
-                                  }}
-                                >
-                                  <X size={10} />
-                                </button>
-                              </div>
-                            ))}
+                            {(opt.images || []).length > 0 && (
+                              <SortableImageThumbs
+                                className={styles.optionImagesThumbsInner}
+                                itemClassName={styles.optionImageThumb}
+                                removeClassName={styles.optionImageRemove}
+                                showMainBadge={false}
+                                items={(opt.images || []).map((url, imgIndex) => ({
+                                  key: `${url}-${imgIndex}`,
+                                  url,
+                                  src: resolveImageUrl(url),
+                                }))}
+                                resolveSrc={(item) => item.src}
+                                onRemove={(_i, item) => {
+                                  const next = (opt.images || []).filter(
+                                    (u) => u !== item.url
+                                  );
+                                  updateOption(vIndex, oIndex, {
+                                    images: next,
+                                    image_url: next[0] || '',
+                                  });
+                                }}
+                                onReorder={(nextItems) => {
+                                  const next = nextItems.map((x) => x.url).filter(Boolean);
+                                  updateOption(vIndex, oIndex, {
+                                    images: next,
+                                    image_url: next[0] || '',
+                                  });
+                                }}
+                              />
+                            )}
                             <button
                               type="button"
                               className={styles.optionImagesAssignBtn}

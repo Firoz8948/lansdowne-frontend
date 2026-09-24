@@ -14,6 +14,7 @@ import {
 import adminService from '@/lib/services/admin';
 import ProductColorEditor from '@/components/ProductColorEditor/ProductColorEditor';
 import ImageLibraryPicker from '@/components/ImageLibraryPicker/ImageLibraryPicker';
+import SortableImageThumbs from '@/components/SortableImageThumbs/SortableImageThumbs';
 import styles from '../products.module.css';
 
 const emptyOption = () => ({
@@ -184,13 +185,9 @@ export default function AddProductPage() {
               /colou?r/i.test(v.name || '') &&
               patch.name != null &&
               Array.isArray(next.colors) &&
-              next.colors.length
+              next.colors.length === 1
             ) {
-              next.colors = next.colors.map((c, ci) =>
-                ci === 0 || next.colors.length === 1
-                  ? { ...c, name: patch.name }
-                  : c
-              );
+              next.colors = next.colors.map((c) => ({ ...c, name: patch.name }));
             }
             return next;
           }),
@@ -236,8 +233,8 @@ export default function AddProductPage() {
                     .filter((c) => c.hex)
                     .map((c, i) => ({
                       name: (
-                        (o.colors.length === 1 || i === 0
-                          ? o.name
+                        (o.colors.length === 1
+                          ? o.name || c.name
                           : c.name || o.name) || ''
                       ).trim(),
                       hex: c.hex,
@@ -402,7 +399,8 @@ export default function AddProductPage() {
         <section className={styles.formSection}>
           <h2 className={styles.sectionTitle}>Product Images</h2>
           <p className={styles.sectionHint}>
-            Square images recommended (1:1 ratio). First image = main image.
+            Square images recommended (1:1 ratio). Drag to reorder — first image =
+            main image.
           </p>
 
           <div
@@ -438,22 +436,25 @@ export default function AddProductPage() {
           </div>
 
           {imagePreviews.length > 0 && (
-            <div className={styles.imagePreviewGrid}>
-              {imagePreviews.map((src, index) => (
-                <div key={`${src}-${index}`} className={styles.imagePreviewItem}>
-                  <img src={src} alt={`Product preview ${index + 1}`} />
-                  {index === 0 && <span className={styles.imageMainBadge}>Main</span>}
-                  <button
-                    type="button"
-                    className={styles.imageRemoveBtn}
-                    onClick={() => removeImage(index)}
-                    aria-label="Remove image"
-                  >
-                    <X size={12} />
-                  </button>
-                </div>
-              ))}
-            </div>
+            <SortableImageThumbs
+              className={styles.imagePreviewGrid}
+              itemClassName={styles.imagePreviewItem}
+              mainBadgeClassName={styles.imageMainBadge}
+              removeClassName={styles.imageRemoveBtn}
+              items={imagePreviews.map((src, index) => ({
+                key: `${src}-${index}`,
+                src,
+                file: imageFiles[index],
+              }))}
+              onRemove={(_i, item) => {
+                const index = imagePreviews.findIndex((s) => s === item.src);
+                if (index >= 0) removeImage(index);
+              }}
+              onReorder={(next) => {
+                setImagePreviews(next.map((x) => x.src));
+                setImageFiles(next.map((x) => x.file).filter(Boolean));
+              }}
+            />
           )}
 
           <button
@@ -605,30 +606,40 @@ export default function AddProductPage() {
                       )}
                       <div className={styles.optionImagesRow}>
                         <span className={styles.optionImagesLabel}>
-                          Photos for this option
+                          Photos for this option — drag to reorder (first = main)
                         </span>
                         <div className={styles.optionImagesThumbs}>
-                          {(opt.images || []).map((url, imgIndex) => (
-                            <div key={`${url}-${imgIndex}`} className={styles.optionImageThumb}>
-                              <img src={resolveImageUrl(url)} alt="" />
-                              <button
-                                type="button"
-                                className={styles.optionImageRemove}
-                                aria-label="Remove photo"
-                                onClick={() => {
-                                  const next = (opt.images || []).filter(
-                                    (_, i) => i !== imgIndex
-                                  );
-                                  updateOption(vIndex, oIndex, {
-                                    images: next,
-                                    image_url: next[0] || '',
-                                  });
-                                }}
-                              >
-                                <X size={10} />
-                              </button>
-                            </div>
-                          ))}
+                          {(opt.images || []).length > 0 && (
+                            <SortableImageThumbs
+                              className={styles.optionImagesThumbsInner}
+                              itemClassName={styles.optionImageThumb}
+                              removeClassName={styles.optionImageRemove}
+                              showMainBadge={false}
+                              items={(opt.images || []).map((url, imgIndex) => ({
+                                key: `${url}-${imgIndex}`,
+                                url,
+                                src: resolveImageUrl(url),
+                              }))}
+                              onRemove={(_i, item) => {
+                                const next = (opt.images || []).filter(
+                                  (u) => u !== item.url
+                                );
+                                updateOption(vIndex, oIndex, {
+                                  images: next,
+                                  image_url: next[0] || '',
+                                });
+                              }}
+                              onReorder={(nextItems) => {
+                                const next = nextItems
+                                  .map((x) => x.url)
+                                  .filter(Boolean);
+                                updateOption(vIndex, oIndex, {
+                                  images: next,
+                                  image_url: next[0] || '',
+                                });
+                              }}
+                            />
+                          )}
                           <button
                             type="button"
                             className={styles.optionImagesAssignBtn}

@@ -2,6 +2,52 @@
 
 import styles from './ColorSwatches.module.css';
 
+function looksLikeProductTitle(name, productName = '') {
+  const n = String(name || '').trim();
+  if (!n) return true;
+  if (n.includes('|')) return true;
+  if (productName && n.toLowerCase() === String(productName).trim().toLowerCase()) {
+    return true;
+  }
+  // Product titles are usually long / many words; color names are short
+  if (n.length > 40) return true;
+  if (n.split(/\s+/).filter(Boolean).length >= 5) return true;
+  return false;
+}
+
+function labelFor(colors, productName = '') {
+  const list = Array.isArray(colors) ? colors : [];
+  if (!list.length) return '';
+  return list
+    .map((c) => {
+      const n = (c?.name || '').trim();
+      if (!n || n.startsWith('#')) return '';
+      if (looksLikeProductTitle(n, productName)) return '';
+      return n;
+    })
+    .filter(Boolean)
+    .join(' ');
+}
+
+/** Display label for a swatch / PDP "Color: …" — never a product title */
+export function getSwatchColorLabel(item, product = null) {
+  if (!item) return '';
+  const productName = product?.name || item.product_name || '';
+  const fromColors = labelFor(item.colors, productName);
+  if (fromColors) return fromColors;
+
+  const n = (item.name || '').trim();
+  if (n && !looksLikeProductTitle(n, productName)) return n;
+
+  // Last resort: option_id items should already have short option names
+  if (item.option_id != null && n && n.length <= 40) return n;
+  return '';
+}
+
+function swatchLabel(item) {
+  return getSwatchColorLabel(item) || 'Color';
+}
+
 function swatchBackground(colors) {
   const list = Array.isArray(colors) ? colors.filter((c) => c?.hex) : [];
   if (list.length === 0) return '#cbd5e1';
@@ -16,21 +62,17 @@ function swatchBackground(colors) {
   return `conic-gradient(from 180deg, ${stops})`;
 }
 
-function labelFor(colors) {
-  const list = Array.isArray(colors) ? colors : [];
-  if (!list.length) return 'Color';
-  return list.map((c) => c.name || c.hex).filter(Boolean).join(' / ');
-}
-
 /**
  * Radio-style color swatches for product cards / PDP.
- * items: [{ id, slug, colors, is_current, name }]
+ * items: [{ id, slug, colors, is_current, name, images }]
  * onSelect(item) — typically navigate to sibling PDP
+ * onPreview(item) — optional hover/focus preview (e.g. swap card image)
  */
 export default function ColorSwatches({
   items = [],
   size = 'md',
   onSelect,
+  onPreview,
   className = '',
   align = 'left',
   stopPropagation = false,
@@ -48,7 +90,7 @@ export default function ColorSwatches({
     >
       {items.map((item) => {
         const selected = Boolean(item.is_current);
-        const label = item.name || labelFor(item.colors);
+        const label = swatchLabel(item);
         return (
           <button
             key={item.id || item.slug || label}
@@ -59,9 +101,12 @@ export default function ColorSwatches({
             title={label}
             className={`${styles.swatch} ${selected ? styles.swatchActive : ''}`}
             style={{ background: swatchBackground(item.colors) }}
+            onMouseEnter={() => onPreview?.(item)}
+            onFocus={() => onPreview?.(item)}
             onClick={(e) => {
               if (stopPropagation) e.stopPropagation();
               e.preventDefault();
+              onPreview?.(item);
               if (!selected) onSelect?.(item);
             }}
           />
@@ -75,13 +120,13 @@ function optionToColors(option) {
   if (!option) return [];
   const optName = (option.name || '').trim();
   if (Array.isArray(option.colors) && option.colors.length) {
+    const multi = option.colors.length > 1;
     return option.colors
       .filter((c) => c?.hex)
-      .map((c, i) => ({
+      .map((c) => ({
         hex: c.hex,
-        // Prefer option name for the primary swatch so stale nested names
-        // (e.g. leftover "Black") never override "Orange"
-        name: (i === 0 ? optName || c.name : c.name || optName) || c.hex,
+        // Single-color: option label wins. Multicolor: keep each swatch's own name.
+        name: (multi ? c.name || optName : optName || c.name) || c.hex,
       }));
   }
   if (option.hex) {
@@ -131,16 +176,33 @@ export function matchColorOption(options, colorParam) {
   );
 }
 
+function siblingColorLabel(sibling, productName = '') {
+  const fromColors = labelFor(sibling?.colors, productName);
+  if (fromColors) return fromColors;
+  // Never use the sibling product title as the color name
+  return '';
+}
+
 export function buildColorSwatchItems(product) {
   if (!product) return [];
+  const productName = product.name || '';
 
   // Linked sibling products (separate PDPs) take priority
   const siblings = Array.isArray(product.color_siblings) ? product.color_siblings : [];
   if (siblings.length > 1) {
-    return siblings.map((s) => ({
-      ...s,
-      is_current: Boolean(s.is_current) || String(s.id) === String(product.id),
-    }));
+    return siblings.map((s) => {
+      const colors = Array.isArray(s.colors) ? s.colors : [];
+      const colorLabel = siblingColorLabel(s, s.name || productName);
+      return {
+        ...s,
+        // Keep product title in product_name; display name is color only
+        product_name: s.name,
+        name: colorLabel || 'Color',
+        colors,
+        images: s.image ? [s.image] : [],
+        is_current: Boolean(s.is_current) || String(s.id) === String(product.id),
+      };
+    });
   }
 
   // Color variant on this product → one radio per option (e.g. Red + Blue)
@@ -148,11 +210,16 @@ export function buildColorSwatchItems(product) {
   if (options.length > 0) {
     return options.map((opt, index) => {
       const colors = optionToColors(opt);
+      const images = optionGalleryUrls(opt);
+      const optName = (opt.name || '').trim();
       return {
         id: opt.id ?? `${product.id}-color-${index}`,
         slug: product.slug,
-        name: opt.name,
-        colors: colors.length ? colors : [{ name: opt.name || 'Color', hex: '#cbd5e1' }],
+        name: optName || 'Color',
+        colors: colors.length
+          ? colors
+          : [{ name: optName || 'Color', hex: '#cbd5e1' }],
+        images,
         is_current: index === 0,
         option_id: opt.id,
       };
@@ -162,9 +229,15 @@ export function buildColorSwatchItems(product) {
   // Single sibling entry or product-level colors → one swatch (may be multicolor)
   if (siblings.length === 1) {
     const s = siblings[0];
+    const colors = Array.isArray(s.colors) ? s.colors : [];
+    const colorLabel = siblingColorLabel(s, s.name || productName);
     return [
       {
         ...s,
+        product_name: s.name,
+        name: colorLabel || 'Color',
+        colors,
+        images: s.image ? [s.image] : [],
         is_current: true,
       },
     ];
@@ -172,13 +245,44 @@ export function buildColorSwatchItems(product) {
 
   const colors = Array.isArray(product.colors) ? product.colors : [];
   if (!colors.length) return [];
+  const colorLabel = labelFor(colors, productName);
   return [
     {
       id: product.id,
       slug: product.slug,
-      name: product.name,
+      name: colorLabel || 'Multicolor',
       colors,
+      images: [],
       is_current: true,
     },
   ];
+}
+
+/** Gallery URLs for a product card given optional active swatch (variant images win). */
+export function resolveCardImages(product, activeSwatch = null) {
+  if (!product) return [];
+  const swatches = buildColorSwatchItems(product);
+  const active =
+    activeSwatch ||
+    swatches.find((s) => s.is_current) ||
+    swatches[0] ||
+    null;
+
+  if (active) {
+    if (Array.isArray(active.images) && active.images.length) {
+      return active.images.filter(Boolean);
+    }
+    if (active.image) return [active.image];
+    if (active.option_id != null || active.name) {
+      const opt = colorVariantOptions(product).find(
+        (o) =>
+          (active.option_id != null && o.id === active.option_id) ||
+          o.name === active.name
+      );
+      const fromOpt = optionGalleryUrls(opt);
+      if (fromOpt.length) return fromOpt;
+    }
+  }
+
+  return Array.isArray(product.images) ? product.images.filter(Boolean) : [];
 }

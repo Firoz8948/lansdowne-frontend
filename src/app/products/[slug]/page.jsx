@@ -12,10 +12,12 @@ import { ArrowLeft, Minus, Plus, ChevronDown, ChevronLeft, ChevronRight } from '
 import ColorSwatches, {
   buildColorSwatchItems,
   colorVariantOptions,
+  getSwatchColorLabel,
   matchColorOption,
   optionGalleryUrls,
   productColorHref,
 } from '@/components/ColorSwatches/ColorSwatches';
+import ProductCard from '@/components/ProductCard/ProductCard';
 import styles from './pdp.module.css';
 import cardStyles from '@/app/home/home.module.css';
 
@@ -583,12 +585,14 @@ function ProductDetailPageInner() {
                     });
 
                     const current = itemsWithSelection.find((s) => s.is_current);
-                    const label =
-                      current?.name ||
-                      (current?.colors || [])
-                        .map((c) => c.name || c.hex)
-                        .filter(Boolean)
-                        .join(' / ');
+                    // Prefer selected Color variant option name (Brown / Black)
+                    let label = '';
+                    if (selectedColor?.name) {
+                      label = String(selectedColor.name).trim();
+                    }
+                    if (!label) {
+                      label = getSwatchColorLabel(current, product);
+                    }
 
                     return (
                       <div className={styles.variantBlock}>
@@ -793,92 +797,15 @@ function ProductDetailPageInner() {
                     <p className={styles.sectionSubtitle}>You may also like</p>
                   </div>
                   <div className={cardStyles.productGrid}>
-                    {relatedProducts.map((item) => {
-                      const primaryImage = resolveImageUrl(item.images?.[0]);
-                      const hoverImage = resolveImageUrl(item.images?.[1]);
-                      const href = item.slug ? `/products/${item.slug}` : '/shop';
-                      const hasDiscount =
-                        item.mrp != null && Number(item.mrp) > Number(item.price);
-                      const hasHoverImage = Boolean(hoverImage);
-
-                      return (
-                        <article
-                          key={item.id}
-                          className={`${cardStyles.productCard} ${
-                            hasHoverImage ? cardStyles.productCardHasHoverImg : ''
-                          }`}
-                        >
-                          <div className={cardStyles.productImageWrap}>
-                            <Link href={href} className={cardStyles.productImageLink}>
-                              {primaryImage ? (
-                                <>
-                                  <img
-                                    src={primaryImage}
-                                    alt={item.name}
-                                    className={`${cardStyles.productImage} ${cardStyles.productImagePrimary}`}
-                                    loading="lazy"
-                                  />
-                                  {hasHoverImage && (
-                                    <img
-                                      src={hoverImage}
-                                      alt=""
-                                      aria-hidden="true"
-                                      className={`${cardStyles.productImage} ${cardStyles.productImageSecondary}`}
-                                      loading="lazy"
-                                    />
-                                  )}
-                                </>
-                              ) : (
-                                <div className={cardStyles.productImagePlaceholder}>
-                                  No image
-                                </div>
-                              )}
-                            </Link>
-                          </div>
-
-                          <div className={cardStyles.productBody}>
-                            <Link href={href} className={cardStyles.productInfoLink}>
-                              {item.category && (
-                                <span className={cardStyles.productCategory}>
-                                  {item.category}
-                                </span>
-                              )}
-                              <h3 className={cardStyles.productName}>{item.name}</h3>
-                              <div className={cardStyles.productPricing}>
-                                <span className={cardStyles.productPrice}>
-                                  {formatPrice(item.price)}
-                                </span>
-                                {hasDiscount && (
-                                  <span className={cardStyles.productMrp}>
-                                    {formatPrice(item.mrp)}
-                                  </span>
-                                )}
-                                <ColorSwatches
-                                  items={buildColorSwatchItems(item)}
-                                  size="sm"
-                                  align="right"
-                                  stopPropagation
-                                  onSelect={(sib) => {
-                                    const href = productColorHref(sib);
-                                    if (href) router.push(href);
-                                  }}
-                                />
-                              </div>
-                            </Link>
-
-                            <div className={cardStyles.productCardActions}>
-                              <button
-                                type="button"
-                                className={cardStyles.productBuyNowBtn}
-                                onClick={(e) => handleRelatedAddToBag(e, item)}
-                              >
-                                Add to Bag
-                              </button>
-                            </div>
-                          </div>
-                        </article>
-                      );
-                    })}
+                    {relatedProducts.map((item) => (
+                      <ProductCard
+                        key={item.id}
+                        product={item}
+                        styles={cardStyles}
+                        formatPrice={formatPrice}
+                        onAddToBag={handleRelatedAddToBag}
+                      />
+                    ))}
                   </div>
                 </section>
               )}

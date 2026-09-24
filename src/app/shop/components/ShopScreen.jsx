@@ -7,10 +7,7 @@ import { SlidersHorizontal, ChevronDown } from 'lucide-react';
 import productService from '@/lib/services/products';
 import { useCart } from '@/context/CartContext';
 import toast from 'react-hot-toast';
-import ColorSwatches, {
-  buildColorSwatchItems,
-  productColorHref,
-} from '@/components/ColorSwatches/ColorSwatches';
+import ProductCard from '@/components/ProductCard/ProductCard';
 import styles from '../shop.module.css';
 
 const SORT_OPTIONS = [
@@ -19,13 +16,6 @@ const SORT_OPTIONS = [
   { value: 'price_desc', label: 'Price: High to Low' },
   { value: 'name_asc', label: 'Name: A–Z' },
 ];
-
-const resolveImageUrl = (url) => {
-  if (!url) return null;
-  if (url.startsWith('http://') || url.startsWith('https://')) return url;
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-  return `${baseUrl}${url.startsWith('/') ? '' : '/'}${url}`;
-};
 
 const formatPrice = (value) => {
   const num = Number(value);
@@ -151,82 +141,15 @@ export default function ShopScreen() {
     syncUrl('', 'newest');
   };
 
-  const renderProductCard = (product) => {
-    const primaryImage = resolveImageUrl(product.images?.[0]);
-    const hoverImage = resolveImageUrl(product.images?.[1]);
-    const href = product.slug ? `/products/${product.slug}` : '/shop';
-    const hasDiscount =
-      product.mrp != null && Number(product.mrp) > Number(product.price);
-    const hasHoverImage = Boolean(hoverImage);
-
-    return (
-      <article
-        key={product.id}
-        className={`${styles.productCard} ${hasHoverImage ? styles.productCardHasHoverImg : ''}`}
-      >
-        <div className={styles.productImageWrap}>
-          <Link href={href} className={styles.productImageLink}>
-            {primaryImage ? (
-              <>
-                <img
-                  src={primaryImage}
-                  alt={product.name}
-                  className={`${styles.productImage} ${styles.productImagePrimary}`}
-                  loading="lazy"
-                />
-                {hasHoverImage && (
-                  <img
-                    src={hoverImage}
-                    alt=""
-                    aria-hidden="true"
-                    className={`${styles.productImage} ${styles.productImageSecondary}`}
-                    loading="lazy"
-                  />
-                )}
-              </>
-            ) : (
-              <div className={styles.productImagePlaceholder}>No image</div>
-            )}
-          </Link>
-        </div>
-
-        <div className={styles.productBody}>
-          <Link href={href} className={styles.productInfoLink}>
-            {product.category && (
-              <span className={styles.productCategory}>{product.category}</span>
-            )}
-            <h3 className={styles.productName}>{product.name}</h3>
-            <div className={styles.productPricing}>
-              <span className={styles.productPrice}>{formatPrice(product.price)}</span>
-              {hasDiscount && (
-                <span className={styles.productMrp}>{formatPrice(product.mrp)}</span>
-              )}
-              <ColorSwatches
-                items={buildColorSwatchItems(product)}
-                size="sm"
-                align="right"
-                stopPropagation
-                onSelect={(item) => {
-                  const href = productColorHref(item);
-                  if (href) router.push(href);
-                }}
-              />
-            </div>
-          </Link>
-
-          <div className={styles.productCardActions}>
-            <button
-              type="button"
-              className={styles.productBuyNowBtn}
-              onClick={(e) => handleAddToBag(e, product)}
-            >
-              Add to Bag
-            </button>
-          </div>
-        </div>
-      </article>
-    );
-  };
+  const renderProductCard = (product) => (
+    <ProductCard
+      key={product.id}
+      product={product}
+      styles={styles}
+      formatPrice={formatPrice}
+      onAddToBag={handleAddToBag}
+    />
+  );
 
   const filterPanel = (
     <>
