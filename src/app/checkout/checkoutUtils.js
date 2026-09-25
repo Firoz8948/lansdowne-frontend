@@ -78,11 +78,26 @@ export function buildCheckoutItems(cartItems) {
         ? Number(item.weight_grams)
         : selections.find((s) => s.weight_grams != null)?.weight_grams;
 
+    const primarySelection =
+      selections.find((s) => /colou?r/i.test(s.variant || '')) || selections[0] || null;
+    const optionId =
+      primarySelection?.option_id ??
+      primarySelection?.optionId ??
+      selections.find((s) => s.option_id != null || s.optionId != null)?.option_id ??
+      selections.find((s) => s.option_id != null || s.optionId != null)?.optionId ??
+      null;
+    const variantId =
+      primarySelection?.variant_id ??
+      primarySelection?.variantId ??
+      null;
+
     let variant_info = null;
-    if (selections.length || item.variantName || item.optionName || label) {
+    if (selections.length || item.variantName || item.optionName || label || optionId) {
       variant_info = {
         variant: item.variantName || selections[0]?.variant || null,
         option: item.optionName || selections[0]?.option || null,
+        option_id: optionId != null ? Number(optionId) || optionId : undefined,
+        variant_id: variantId != null ? Number(variantId) || variantId : undefined,
         label,
         selections: selections.length ? selections : undefined,
         weight_grams: weight != null ? Number(weight) : undefined,
