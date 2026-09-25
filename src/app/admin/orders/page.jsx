@@ -1,21 +1,21 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
+import Link from 'next/link';
 import toast from 'react-hot-toast';
-import { Package, X } from 'lucide-react';
+import { Package, X, ExternalLink } from 'lucide-react';
 import adminService from '@/lib/services/admin';
-import { formatVariantLabel } from '@/app/checkout/checkoutUtils';
+import {
+  resolveMediaUrl,
+  getOrderItemColor,
+  getOrderItemHref,
+  getOrderStatusMeta,
+  ORDER_STATUS_META,
+} from '@/lib/orderDisplay';
 import productStyles from '../products/products.module.css';
 import styles from './orders.module.css';
 
-const ORDER_STATUSES = [
-  'pending',
-  'confirmed',
-  'processing',
-  'shipped',
-  'delivered',
-  'cancelled',
-];
+const ORDER_STATUSES = Object.keys(ORDER_STATUS_META);
 
 const formatPrice = (value) => {
   const num = Number(value);
@@ -37,6 +37,53 @@ const formatDate = (value) => {
     return value;
   }
 };
+
+function StatusBadge({ status }) {
+  const meta = getOrderStatusMeta(status);
+  return (
+    <span
+      className={styles.statusBadge}
+      style={{
+        background: meta.bg,
+        color: meta.color,
+        borderColor: meta.border,
+      }}
+    >
+      {meta.label}
+    </span>
+  );
+}
+
+function StatusSelect({ value, disabled, onChange, className }) {
+  const meta = getOrderStatusMeta(value);
+  return (
+    <select
+      className={`${productStyles.formInput} ${styles.statusSelect} ${className || ''}`}
+      value={value || ''}
+      disabled={disabled}
+      onChange={onChange}
+      style={{
+        background: meta.bg,
+        color: meta.color,
+        borderColor: meta.border,
+        fontWeight: 600,
+      }}
+    >
+      {ORDER_STATUSES.map((s) => {
+        const opt = getOrderStatusMeta(s);
+        return (
+          <option
+            key={s}
+            value={s}
+            style={{ background: opt.bg, color: opt.color }}
+          >
+            {opt.label}
+          </option>
+        );
+      })}
+    </select>
+  );
+}
 
 export default function AdminOrdersPage() {
   const [orders, setOrders] = useState([]);
@@ -72,7 +119,7 @@ export default function AdminOrdersPage() {
     try {
       setUpdating(true);
       const updated = await adminService.updateOrderStatus(orderId, nextStatus);
-      toast.success(`Order marked ${nextStatus}`);
+      toast.success(`Order marked ${getOrderStatusMeta(nextStatus).label}`);
       setSelected(updated);
       load();
     } catch (err) {
@@ -88,21 +135,35 @@ export default function AdminOrdersPage() {
         <div>
           <h1 className={productStyles.title}>Orders</h1>
           <p className={productStyles.subtitle}>
-            {total} order{total === 1 ? '' : 's'} placed. Click a row to view details and update status.
+            {total} order{total === 1 ? '' : 's'} placed. Click a row to view details and update
+            status.
           </p>
         </div>
         <select
-          className={productStyles.formInput}
-          style={{ width: 180 }}
+          className={`${productStyles.formInput} ${styles.statusSelect}`}
+          style={{
+            width: 200,
+            ...(statusFilter
+              ? {
+                  background: getOrderStatusMeta(statusFilter).bg,
+                  color: getOrderStatusMeta(statusFilter).color,
+                  borderColor: getOrderStatusMeta(statusFilter).border,
+                  fontWeight: 600,
+                }
+              : {}),
+          }}
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
         >
           <option value="">All statuses</option>
-          {ORDER_STATUSES.map((s) => (
-            <option key={s} value={s}>
-              {s}
-            </option>
-          ))}
+          {ORDER_STATUSES.map((s) => {
+            const opt = getOrderStatusMeta(s);
+            return (
+              <option key={s} value={s} style={{ background: opt.bg, color: opt.color }}>
+                {opt.label}
+              </option>
+            );
+          })}
         </select>
       </div>
 
@@ -150,9 +211,7 @@ export default function AdminOrdersPage() {
                       <div className={styles.muted}>{order.payment_status || ''}</div>
                     </td>
                     <td className={productStyles.td}>
-                      <span className={`${productStyles.badge} ${productStyles.badgeActive}`}>
-                        {order.order_status}
-                      </span>
+                      <StatusBadge status={order.order_status} />
                     </td>
                     <td className={productStyles.td}>{formatDate(order.created_at)}</td>
                   </tr>
@@ -212,18 +271,16 @@ export default function AdminOrdersPage() {
                 </div>
                 <div>
                   <h4 className={styles.detailLabel}>Update status</h4>
-                  <select
-                    className={productStyles.formInput}
-                    value={selected.order_status || ''}
-                    disabled={updating}
-                    onChange={(e) => handleStatusChange(selected.order_id, e.target.value)}
-                  >
-                    {ORDER_STATUSES.map((s) => (
-                      <option key={s} value={s}>
-                        {s}
-                      </option>
-                    ))}
-                  </select>
+                  <div className={styles.statusUpdateRow}>
+                    <StatusBadge status={selected.order_status} />
+                    <StatusSelect
+                      value={selected.order_status || ''}
+                      disabled={updating}
+                      onChange={(e) =>
+                        handleStatusChange(selected.order_id, e.target.value)
+                      }
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -232,16 +289,50 @@ export default function AdminOrdersPage() {
               </h4>
               <div className={styles.itemsList}>
                 {(selected.items || []).map((item, idx) => {
-                  const variantText = formatVariantLabel(item);
+                  const color = getOrderItemColor(item);
+                  const href = getOrderItemHref(item);
+                  const img = resolveMediaUrl(item.image);
                   return (
-                    <div key={idx} className={styles.itemRow}>
-                      <span>
-                        {item.name} × {item.quantity}
-                        {variantText ? (
-                          <span className={styles.itemVariant}> — {variantText}</span>
+                    <div key={item.id || idx} className={styles.itemCard}>
+                      <div className={styles.itemThumbWrap}>
+                        {img ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            src={img}
+                            alt={item.name || 'Product'}
+                            className={styles.itemThumb}
+                          />
+                        ) : (
+                          <div className={styles.itemThumbPlaceholder} />
+                        )}
+                      </div>
+                      <div className={styles.itemBody}>
+                        <div className={styles.itemTitleRow}>
+                          {href ? (
+                            <Link
+                              href={href}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className={styles.itemNameLink}
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              {item.name}
+                              <ExternalLink size={13} />
+                            </Link>
+                          ) : (
+                            <span className={styles.itemName}>{item.name}</span>
+                          )}
+                          <span className={styles.itemPrice}>
+                            {formatPrice(item.price * item.quantity)}
+                          </span>
+                        </div>
+                        {color ? (
+                          <p className={styles.itemColor}>Color: {color}</p>
                         ) : null}
-                      </span>
-                      <span>{formatPrice(item.price * item.quantity)}</span>
+                        <p className={styles.itemMeta}>
+                          Qty {item.quantity} · {formatPrice(item.price)} each
+                        </p>
+                      </div>
                     </div>
                   );
                 })}

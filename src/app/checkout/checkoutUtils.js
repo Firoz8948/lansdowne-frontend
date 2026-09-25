@@ -111,6 +111,7 @@ export function buildCheckoutItems(cartItems) {
     return {
       product_id: String(item.productId || item.id),
       name: item.name,
+      slug: item.slug || null,
       price: Number(item.price) || 0,
       quantity: Number(item.quantity) || 1,
       image: item.image || null,

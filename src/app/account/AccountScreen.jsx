@@ -10,7 +10,13 @@ import Footer from '@/components/Footer/Footer';
 import ShopNowButton from '@/components/ShopNowButton';
 import authService from '@/lib/services/auth';
 import orderService from '@/lib/services/orders';
-import { INDIAN_STATES, formatPrice, digitsOnly, formatVariantLabel } from '@/app/checkout/checkoutUtils';
+import { INDIAN_STATES, formatPrice, digitsOnly } from '@/app/checkout/checkoutUtils';
+import {
+  resolveMediaUrl,
+  getOrderItemColor,
+  getOrderItemHref,
+  getOrderStatusMeta,
+} from '@/lib/orderDisplay';
 import styles from './account.module.css';
 
 function displayEmail(email) {
@@ -32,8 +38,7 @@ function formatDate(value) {
 }
 
 function statusLabel(status) {
-  if (!status) return '—';
-  return String(status).replace(/_/g, ' ');
+  return getOrderStatusMeta(status).label;
 }
 
 const emptyProfile = {
@@ -475,34 +480,82 @@ export default function AccountScreen() {
                     </div>
                   ) : (
                     <ul className={styles.orderList}>
-                      {orders.map((order) => (
-                        <li key={order.order_id || order.id} className={styles.orderItem}>
-                          <div className={styles.orderTop}>
-                            <span className={styles.orderId}>
-                              #{order.order_id || order.id}
-                            </span>
-                            <span className={styles.orderStatus}>
-                              {statusLabel(order.order_status)}
-                            </span>
-                          </div>
-                          <div className={styles.orderMeta}>
-                            <span>{formatDate(order.created_at)}</span>
-                            <span>{formatPrice(order.total)}</span>
-                          </div>
-                          {order.items?.length > 0 && (
-                            <p className={styles.orderItems}>
-                              {order.items
-                                .map((item) => {
-                                  const variantText = formatVariantLabel(item);
-                                  return `${item.name}${
-                                    variantText ? ` (${variantText})` : ''
-                                  } × ${item.quantity}`;
-                                })
-                                .join(', ')}
-                            </p>
-                          )}
-                        </li>
-                      ))}
+                      {orders.map((order) => {
+                        const statusMeta = getOrderStatusMeta(order.order_status);
+                        return (
+                          <li key={order.order_id || order.id} className={styles.orderItem}>
+                            <div className={styles.orderTop}>
+                              <span className={styles.orderId}>
+                                #{order.order_id || order.id}
+                              </span>
+                              <span
+                                className={styles.orderStatusBadge}
+                                style={{
+                                  background: statusMeta.bg,
+                                  color: statusMeta.color,
+                                  borderColor: statusMeta.border,
+                                }}
+                              >
+                                {statusLabel(order.order_status)}
+                              </span>
+                            </div>
+                            <div className={styles.orderMeta}>
+                              <span>{formatDate(order.created_at)}</span>
+                              <span>{formatPrice(order.total)}</span>
+                            </div>
+                            {order.items?.length > 0 && (
+                              <ul className={styles.orderLineList}>
+                                {order.items.map((item, idx) => {
+                                  const href = getOrderItemHref(item);
+                                  const color = getOrderItemColor(item);
+                                  const img = resolveMediaUrl(item.image);
+                                  const body = (
+                                    <>
+                                      <div className={styles.orderLineThumbWrap}>
+                                        {img ? (
+                                          // eslint-disable-next-line @next/next/no-img-element
+                                          <img
+                                            src={img}
+                                            alt={item.name || 'Product'}
+                                            className={styles.orderLineThumb}
+                                          />
+                                        ) : (
+                                          <div className={styles.orderLineThumbPlaceholder} />
+                                        )}
+                                      </div>
+                                      <div className={styles.orderLineInfo}>
+                                        <span className={styles.orderLineName}>
+                                          {item.name}
+                                        </span>
+                                        {color ? (
+                                          <span className={styles.orderLineColor}>
+                                            Color: {color}
+                                          </span>
+                                        ) : null}
+                                        <span className={styles.orderLineQty}>
+                                          Qty {item.quantity}
+                                          {href ? ' · View product' : ''}
+                                        </span>
+                                      </div>
+                                    </>
+                                  );
+                                  return (
+                                    <li key={item.id || idx} className={styles.orderLine}>
+                                      {href ? (
+                                        <Link href={href} className={styles.orderLineLink}>
+                                          {body}
+                                        </Link>
+                                      ) : (
+                                        <div className={styles.orderLineLink}>{body}</div>
+                                      )}
+                                    </li>
+                                  );
+                                })}
+                              </ul>
+                            )}
+                          </li>
+                        );
+                      })}
                     </ul>
                   )}
                 </section>

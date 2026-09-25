@@ -77,6 +77,7 @@ export default function PaymentsPage() {
             <table className={productStyles.table}>
               <thead>
                 <tr>
+                  <th className={productStyles.th}>Paid by</th>
                   <th className={productStyles.th}>Payment ID</th>
                   <th className={productStyles.th}>Gateway ref</th>
                   <th className={productStyles.th}>Amount</th>
@@ -87,6 +88,14 @@ export default function PaymentsPage() {
               <tbody>
                 {payments.map((payment) => (
                   <tr key={payment.id} className={productStyles.tr}>
+                    <td className={productStyles.td}>
+                      <div style={{ fontWeight: 600 }}>
+                        {payment.customer?.name || '—'}
+                      </div>
+                      <div style={{ fontSize: '0.78rem', color: '#64748b', marginTop: 2 }}>
+                        {payment.customer?.phone || ''}
+                      </div>
+                    </td>
                     <td className={productStyles.td}>
                       <code style={{ fontSize: '0.8rem' }}>{payment.id}</code>
                     </td>
