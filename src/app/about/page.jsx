@@ -70,6 +70,8 @@ export default function AboutPage() {
               <br />
               Sadar Bazaar, Lansdowne, Uttarakhand 246155, India
               <br />
+              GSTIN: 05AUDPK1669E1ZU
+              <br />
               Phone / WhatsApp: <a href="tel:+918979543500">+91 89795 43500</a>
               <br />
               Email: <a href="mailto:lansdowneleather1@gmail.com">lansdowneleather1@gmail.com</a>

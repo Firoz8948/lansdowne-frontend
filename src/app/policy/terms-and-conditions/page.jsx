@@ -84,6 +84,7 @@ export default function TermsAndConditionsPage() {
             <li><strong>Phone:</strong> +91 89795 43500</li>
             <li><strong>Business:</strong> JBS and Co (Lansdowne Leather)</li>
             <li><strong>Address:</strong> Sadar Bazaar, Lansdowne, Uttarakhand 246155, India</li>
+            <li><strong>GSTIN:</strong> 05AUDPK1669E1ZU</li>
           </ul>
         </div>
       </main>

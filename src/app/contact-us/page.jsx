@@ -1,4 +1,4 @@
-import styles from './contact.module.css';
+﻿import styles from './contact.module.css';
 import Header from '@/components/Header/Header';
 import Footer from '@/components/Footer/Footer';
 import PageHeroBanner from '@/components/PageHeroBanner/PageHeroBanner';
@@ -38,7 +38,7 @@ const contactInfo = [
     icon: MapPin,
     label: 'Business Address',
     value: 'JBS and Co (Lansdowne Leather)',
-    extra: 'Sadar Bazaar, Lansdowne, Uttarakhand 246155, India',
+    extra: 'Sadar Bazaar, Lansdowne, Uttarakhand 246155, India · GSTIN: 05AUDPK1669E1ZU',
   },
 ];
 

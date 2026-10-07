@@ -412,6 +412,7 @@ export function buildOrganizationJsonLd() {
     '@id': `${SITE_URL}/#organization`,
     name: BRAND,
     legalName: 'JBS and Co',
+    taxID: '05AUDPK1669E1ZU',
     url: SITE_URL,
     telephone: '+91-89795-43500',
     address: {

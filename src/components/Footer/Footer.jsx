@@ -25,6 +25,7 @@ export default function Footer() {
           <address className={styles.businessInfo}>
             <strong>JBS and Co (Lansdowne Leather)</strong>
             <span>Sadar Bazaar, Lansdowne, Uttarakhand 246155, India</span>
+            <span>GSTIN: 05AUDPK1669E1ZU</span>
             <a href="tel:+918979543500">+91 89795 43500</a>
             <a href="mailto:lansdowneleather1@gmail.com">lansdowneleather1@gmail.com</a>
           </address>
