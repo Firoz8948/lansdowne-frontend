@@ -3,6 +3,8 @@ const nextConfig = {
   output: 'standalone',
   reactStrictMode: true,
   images: {
+    // Assets are pre-compressed WebP on Bunny CDN; on-server resizing only burns CPU/RAM on the small EC2 box.
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: 'http',
