@@ -4,12 +4,12 @@ const PRINCIPLES = [
   {
     num: '01',
     title: 'Craft',
-    desc: 'Precision-finished by hand. Every stitch considered.',
+    desc: 'Checked by hand in Lansdowne before dispatch. Every stitch inspected.',
   },
   {
     num: '02',
     title: 'Material',
-    desc: 'Chosen for longevity, genuine leather with 100% Authentic Quality',
+    desc: 'Genuine leather, chosen for longevity.',
   },
   {
     num: '03',
@@ -19,7 +19,7 @@ const PRINCIPLES = [
   {
     num: '04',
     title: 'Assurance',
-    desc: 'Direct manufacturer warranty. Clear returns.',
+    desc: '7-day returns on unused products. Free replacement if it arrives damaged.',
   },
 ];
 

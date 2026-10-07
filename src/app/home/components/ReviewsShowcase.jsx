@@ -16,37 +16,37 @@ const IMAGE_REVIEWS = [
   {
     id: 'i-luke',
     src: 'https://lansdowne-cdn.b-cdn.net/Reviews/luke%20kenny.webp',
-    caption: 'Visited by Luke Kenny',
+    caption: 'Luke Kenny at our store in Lansdowne',
   },
   {
     id: 'i2',
     src: 'https://lansdowne-cdn.b-cdn.net/Reviews/review_2.png',
-    caption: 'Anupam Kher at our store',
+    caption: 'Anupam Kher at our store in Lansdowne',
   },
   {
     id: 'i3',
     src: 'https://lansdowne-cdn.b-cdn.net/Reviews/review_3.png',
-    caption: 'A moment with Anupam Kher',
+    caption: 'Anupam Kher at our store in Lansdowne',
   },
   {
     id: 'i4',
     src: 'https://lansdowne-cdn.b-cdn.net/Reviews/review_4.png',
-    caption: 'Major General GD Bakshi Sir chooses Lansdowne',
+    caption: 'Major General GD Bakshi at our store in Lansdowne',
   },
   {
     id: 'i5',
     src: 'https://lansdowne-cdn.b-cdn.net/Reviews/review_5.png',
-    caption: 'Boman Irani with Lansdowne',
+    caption: 'Boman Irani at our store in Lansdowne',
   },
   {
     id: 'i6',
     src: 'https://lansdowne-cdn.b-cdn.net/Reviews/review_6.png',
-    caption: 'Kruttika Desai — craft she trusts',
+    caption: 'Kruttika Desai at our store in Lansdowne',
   },
   {
     id: 'i7',
     src: 'https://lansdowne-cdn.b-cdn.net/Reviews/review_7.png',
-    caption: 'Raju Kher appreciates the finish',
+    caption: 'Raju Kher at our store in Lansdowne',
   },
 ];
 
@@ -166,7 +166,7 @@ function ImageReviewsMarquee() {
   const loop = [...IMAGE_REVIEWS, ...IMAGE_REVIEWS];
 
   return (
-    <div className={styles.reviewMarquee} aria-label="Customer photo reviews">
+    <div className={styles.reviewMarquee} aria-label="Photos of visitors at our store">
       <div className={styles.reviewMarqueeTrack}>
         {loop.map((review, i) => (
           <figure
@@ -208,8 +208,8 @@ export default function ReviewsShowcase() {
 
       <section className={`${styles.section} ${styles.reviewsSection}`}>
         <div className={styles.sectionHeader}>
-          <h2 className={styles.sectionTitle}>LOVED BY CELEBRITIES</h2>
-          <p className={styles.sectionSubtitle}>Moments with names we admire</p>
+          <h2 className={styles.sectionTitle}>VISITORS AT OUR STORE</h2>
+          <p className={styles.sectionSubtitle}>Familiar faces who stopped by in Lansdowne</p>
         </div>
         <ImageReviewsMarquee />
       </section>

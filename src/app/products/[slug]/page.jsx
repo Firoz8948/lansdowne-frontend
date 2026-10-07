@@ -12,7 +12,7 @@ import ProductDetailClient from './ProductDetailClient';
 
 async function loadProduct(slug) {
   const [productRes, defsRes] = await Promise.all([
-    fetchApi(`/products/${encodeURIComponent(slug)}`, { revalidate: 60 }),
+    fetchApi(`/products/${encodeURIComponent(slug)}`, { revalidate: 0 }),
     fetchApi('/metafields/', { revalidate: 300 }),
   ]);
   return {

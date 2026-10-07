@@ -22,6 +22,12 @@ export default function Footer() {
             Curated premium leather products built for quality, elegance, and
             distinction.
           </p>
+          <address className={styles.businessInfo}>
+            <strong>JBS and Co (Lansdowne Leather)</strong>
+            <span>Sadar Bazaar, Lansdowne, Uttarakhand 246155, India</span>
+            <a href="tel:+918979543500">+91 89795 43500</a>
+            <a href="mailto:lansdowneleather1@gmail.com">lansdowneleather1@gmail.com</a>
+          </address>
           <div className={styles.socialRow}>
             <a
               href="https://www.instagram.com/leather_by_jbs/"
@@ -104,8 +110,8 @@ export default function Footer() {
       </div>
 
       <div className={styles.bottomBar}>
-        <span>© {new Date().getFullYear()} Lansdowne. All rights reserved.</span>
-        <span>Secure Payments &amp; Fast Delivery</span>
+        <span>© {new Date().getFullYear()} JBS and Co (Lansdowne Leather). All rights reserved.</span>
+        <span>Secure payments · Free shipping on prepaid orders · 7-day returns</span>
       </div>
     </footer>
   );

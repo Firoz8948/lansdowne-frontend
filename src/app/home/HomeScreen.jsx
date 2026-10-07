@@ -7,7 +7,6 @@ import {
   ProductShowcase,
   WhyChooseUs,
   ReviewsShowcase,
-  Newsletter,
 } from './components';
 
 export default function HomeScreen() {
@@ -20,7 +19,6 @@ export default function HomeScreen() {
         <ProductShowcase />
         <WhyChooseUs />
         <ReviewsShowcase />
-        <Newsletter />
       </main>
       <Footer />
     </div>

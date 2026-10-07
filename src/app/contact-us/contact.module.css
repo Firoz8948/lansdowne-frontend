@@ -179,6 +179,39 @@
   box-shadow: var(--shadow-md);
 }
 
+.formActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.secondaryBtn {
+  background: transparent;
+  color: var(--text-main);
+  padding: 13px 32px;
+  font-weight: 700;
+  font-size: var(--text-body);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border: 1px solid var(--border);
+  margin-top: 4px;
+  cursor: pointer;
+  transition: border-color var(--transition-fast);
+}
+
+.secondaryBtn:hover {
+  border-color: var(--primary);
+}
+
+.infoValue a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.infoValue a:hover {
+  text-decoration: underline;
+}
+
 @media (max-width: 640px) {
   .formRow {
     grid-template-columns: 1fr;

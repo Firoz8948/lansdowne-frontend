@@ -97,7 +97,7 @@ export default function PrivacyPolicyPage() {
           </p>
 
           <div className={styles.highlightBox}>
-            <p>If you have any questions about this Privacy Policy, please contact us at <strong>lansdowneleather1@gmail.com</strong> or call <strong>+91 89795 43500</strong>.</p>
+            <p>This website is operated by JBS and Co (Lansdowne Leather), Sadar Bazaar, Lansdowne, Uttarakhand 246155, India. If you have any questions about this Privacy Policy, please contact us at <strong>lansdowneleather1@gmail.com</strong> or call <strong>+91 89795 43500</strong>.</p>
           </div>
         </div>
       </main>

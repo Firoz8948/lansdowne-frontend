@@ -16,17 +16,17 @@ const values = [
   {
     icon: Gem,
     title: 'Uncompromising Quality',
-    desc: 'Every Lansdowne product undergoes rigorous quality checks. We source the finest materials and partner with skilled artisans to deliver products that exceed expectations.',
+    desc: 'Every wallet, bag and belt is made of genuine leather and is checked by hand at our store in Lansdowne before it is packed and dispatched.',
   },
   {
     icon: Shield,
-    title: 'Heritage & Trust',
-    desc: 'Rooted in the tradition of Indian craftsmanship, we blend heritage techniques with modern aesthetics — building a brand you can trust for years to come.',
+    title: 'A Real Business You Can Reach',
+    desc: 'Lansdowne Leather is run by JBS and Co from Sadar Bazaar, Lansdowne. Call us, email us or message us on WhatsApp, and a member of our team will answer.',
   },
   {
     icon: Leaf,
-    title: 'Responsible Sourcing',
-    desc: 'We are committed to ethical sourcing and sustainable practices. Our supply chain prioritises fair wages, minimal waste, and eco-conscious packaging.',
+    title: 'Clear, Honest Policies',
+    desc: 'Free shipping on prepaid orders, a flat ₹99 charge for Cash on Delivery, and 7-day returns on unused products. No hidden charges.',
   },
   {
     icon: Heart,
@@ -58,6 +58,21 @@ export default function AboutPage() {
             </p>
             <p className={styles.paragraph}>
               Born in Lansdowne, Uttarakhand. Inspired by mountains. Crafted for everyday journeys.
+            </p>
+            <p className={styles.paragraph}>
+              Lansdowne Leather is the online store of JBS and Co, a leather goods business in Sadar
+              Bazaar, Lansdowne. We sell genuine leather wallets, card holders, handbags, sling
+              bags, laptop bags and belts for men and women, and ship them to customers across
+              India.
+            </p>
+            <p className={styles.paragraph}>
+              <strong>JBS and Co (Lansdowne Leather)</strong>
+              <br />
+              Sadar Bazaar, Lansdowne, Uttarakhand 246155, India
+              <br />
+              Phone / WhatsApp: <a href="tel:+918979543500">+91 89795 43500</a>
+              <br />
+              Email: <a href="mailto:lansdowneleather1@gmail.com">lansdowneleather1@gmail.com</a>
             </p>
           </div>
         </section>
@@ -95,9 +110,9 @@ export default function AboutPage() {
               <div className={styles.whyItem}>
                 <span className={styles.whyNumber}>01</span>
                 <div>
-                  <h4 className={styles.whyItemTitle}>Curated, Not Mass-Produced</h4>
+                  <h4 className={styles.whyItemTitle}>Carefully Selected</h4>
                   <p className={styles.whyItemDesc}>
-                    Every product is carefully selected and tested before it earns a place in our collection. We believe in quality over quantity.
+                    Every product is chosen and checked by us before it earns a place in our collection. We believe in quality over quantity.
                   </p>
                 </div>
               </div>

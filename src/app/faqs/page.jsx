@@ -25,7 +25,7 @@ const faqGroups = [
       },
       {
         q: 'Do you deliver across India?',
-        a: 'Yes, we deliver to all serviceable pin codes across India. Enter your pin code at checkout to confirm availability and estimated delivery dates for your area.',
+        a: 'Yes, we deliver to all serviceable pin codes across India. If a pin code is not serviceable by our courier partner, we will contact you before dispatch.',
       },
       {
         q: 'Is there a shipping charge?',
@@ -76,15 +76,15 @@ const faqGroups = [
     items: [
       {
         q: 'Are your products genuine and original?',
-        a: 'Yes, every product sold on Lansdowne is 100% authentic and sourced directly from verified manufacturers. We stand behind the quality of every item in our collection.',
+        a: 'Yes. Our wallets, bags and belts are made of genuine leather, and every piece is checked by us in Lansdowne before it is dispatched.',
       },
       {
-        q: 'How should I care for my products?',
-        a: 'Care instructions are provided on each product page and on the label inside the product. As a general guideline, we recommend gentle machine wash or hand wash in cold water for apparel, and wiping with a soft cloth for accessories.',
+        q: 'How should I care for my leather products?',
+        a: 'Wipe with a soft, dry cloth to remove dust. Keep the product away from water, direct sunlight and heat. If it gets wet, let it air-dry naturally. Do not use a hair dryer. Store it in a cool, dry place when not in use, and apply a leather conditioner every few months to keep it supple.',
       },
       {
         q: 'A product I want is out of stock. Will it be restocked?',
-        a: 'Popular items are restocked regularly. You can use the "Notify Me" feature on the product page to receive an alert as soon as the item is back in stock.',
+        a: 'Popular items are restocked regularly. Message us on WhatsApp at +91 89795 43500 and we will let you know as soon as it is back in stock.',
       },
     ],
   },

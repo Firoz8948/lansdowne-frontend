@@ -17,7 +17,7 @@ export default function TermsAndConditionsPage() {
       <Header />
       <PageHeroBanner
         title="Terms & Conditions"
-        subtitle="Last updated: September 2026"
+        subtitle="Last updated: October 2026"
         backLabel="Back to Home"
         backHref="/"
       />
@@ -26,7 +26,7 @@ export default function TermsAndConditionsPage() {
         <div className={styles.content}>
           <h2 className={styles.sectionHeading}>1. Acceptance of Terms</h2>
           <p className={styles.paragraph}>
-            By accessing, browsing, or purchasing from the Lansdowne website (lansdowne.in), you acknowledge that you have read, understood, and agree to be bound by these Terms and Conditions. If you do not agree to these terms, please refrain from using our website or services.
+            This website, lansdowneleather.com, is operated by JBS and Co, Sadar Bazaar, Lansdowne, Uttarakhand 246155, India, under the brand name Lansdowne Leather. By accessing, browsing, or purchasing from this website, you acknowledge that you have read, understood, and agree to be bound by these Terms and Conditions. If you do not agree to these terms, please refrain from using our website or services.
           </p>
 
           <h2 className={styles.sectionHeading}>2. Eligibility</h2>
@@ -62,7 +62,7 @@ export default function TermsAndConditionsPage() {
 
           <h2 className={styles.sectionHeading}>7. Intellectual Property</h2>
           <p className={styles.paragraph}>
-            All content on the Lansdowne website — including but not limited to text, graphics, logos, images, product photographs, and software — is the property of Lansdowne Lifestyle Pvt. Ltd. and is protected by applicable intellectual property laws. You may not reproduce, distribute, or create derivative works from any content without our prior written consent.
+            All content on the Lansdowne website — including but not limited to text, graphics, logos, images, product photographs, and software — is the property of JBS and Co (Lansdowne Leather) and is protected by applicable intellectual property laws. You may not reproduce, distribute, or create derivative works from any content without our prior written consent.
           </p>
 
           <h2 className={styles.sectionHeading}>8. Limitation of Liability</h2>
@@ -72,7 +72,7 @@ export default function TermsAndConditionsPage() {
 
           <h2 className={styles.sectionHeading}>9. Governing Law & Jurisdiction</h2>
           <p className={styles.paragraph}>
-            These Terms and Conditions are governed by and construed in accordance with the laws of India. Any disputes arising out of or in connection with these terms shall be subject to the exclusive jurisdiction of the courts in New Delhi, India.
+            These Terms and Conditions are governed by and construed in accordance with the laws of India. Any disputes arising out of or in connection with these terms shall be subject to the exclusive jurisdiction of the courts in Pauri Garhwal, Uttarakhand, India.
           </p>
 
           <h2 className={styles.sectionHeading}>10. Contact Information</h2>
@@ -82,7 +82,8 @@ export default function TermsAndConditionsPage() {
           <ul className={styles.list}>
             <li><strong>Email:</strong> lansdowneleather1@gmail.com</li>
             <li><strong>Phone:</strong> +91 89795 43500</li>
-            <li><strong>Address:</strong> Lansdowne Lifestyle Pvt. Ltd., New Delhi, India — 110001</li>
+            <li><strong>Business:</strong> JBS and Co (Lansdowne Leather)</li>
+            <li><strong>Address:</strong> Sadar Bazaar, Lansdowne, Uttarakhand 246155, India</li>
           </ul>
         </div>
       </main>

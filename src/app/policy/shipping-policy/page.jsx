@@ -106,7 +106,8 @@ export default function ShippingPolicyPage() {
           </p>
           <ul className={styles.list}>
             <li><strong>Email:</strong> lansdowneleather1@gmail.com</li>
-            <li><strong>Phone:</strong> +91 89795 43500</li>
+            <li><strong>Phone / WhatsApp:</strong> +91 89795 43500</li>
+            <li><strong>Address:</strong> JBS and Co (Lansdowne Leather), Sadar Bazaar, Lansdowne, Uttarakhand 246155, India</li>
             <li><strong>Hours:</strong> Mon – Sat, 10:00 AM – 7:00 PM IST</li>
           </ul>
         </div>

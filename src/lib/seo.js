@@ -40,12 +40,16 @@ const API_BASE = (
   'http://localhost:8000/api/v1'
 ).replace(/\/+$/, '');
 
-/** Server-side JSON fetch that never throws; `status` is 0 on network failure. */
+/**
+ * Server-side JSON fetch that never throws; `status` is 0 on network failure.
+ * Pass `revalidate: 0` for data that can disappear (products): Next only caches
+ * 200 responses, so a cached copy would otherwise outlive a 404 indefinitely.
+ */
 export async function fetchApi(path, { revalidate = 60 } = {}) {
   try {
     const res = await fetch(`${API_BASE}${path}`, {
       headers: { Accept: 'application/json' },
-      next: { revalidate },
+      ...(revalidate === 0 ? { cache: 'no-store' } : { next: { revalidate } }),
       signal: AbortSignal.timeout(8000),
     });
     if (!res.ok) return { ok: false, status: res.status, data: null };
@@ -407,7 +411,17 @@ export function buildOrganizationJsonLd() {
     '@type': 'Organization',
     '@id': `${SITE_URL}/#organization`,
     name: BRAND,
+    legalName: 'JBS and Co',
     url: SITE_URL,
+    telephone: '+91-89795-43500',
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: 'Sadar Bazaar',
+      addressLocality: 'Lansdowne',
+      addressRegion: 'Uttarakhand',
+      postalCode: '246155',
+      addressCountry: 'IN',
+    },
     logo: absoluteUrl('/icon.png'),
     image: ASSETS.ogImage,
     sameAs: SOCIAL_LINKS,

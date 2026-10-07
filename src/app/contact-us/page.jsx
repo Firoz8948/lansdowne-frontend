@@ -4,6 +4,7 @@ import Footer from '@/components/Footer/Footer';
 import PageHeroBanner from '@/components/PageHeroBanner/PageHeroBanner';
 import { Mail, Phone, Clock, MapPin } from 'lucide-react';
 import { pageMetadata } from '@/lib/seo';
+import ContactForm from './ContactForm';
 
 export const metadata = pageMetadata({
   title: 'Contact Us | Lansdowne Leather',
@@ -17,13 +18,15 @@ const contactInfo = [
     icon: Mail,
     label: 'Email Support',
     value: 'lansdowneleather1@gmail.com',
+    href: 'mailto:lansdowneleather1@gmail.com',
     extra: 'We typically respond within 24 hours',
   },
   {
     icon: Phone,
-    label: 'Customer Helpline',
+    label: 'Phone / WhatsApp',
     value: '+91 89795 43500',
-    extra: 'Available during business hours',
+    href: 'tel:+918979543500',
+    extra: 'Call or WhatsApp during business hours',
   },
   {
     icon: Clock,
@@ -33,9 +36,9 @@ const contactInfo = [
   },
   {
     icon: MapPin,
-    label: 'Registered Office',
-    value: 'JBS and Co',
-    extra: 'Sadar Bazaar, Lansdowne, Uttarakhand, 246155',
+    label: 'Business Address',
+    value: 'JBS and Co (Lansdowne Leather)',
+    extra: 'Sadar Bazaar, Lansdowne, Uttarakhand 246155, India',
   },
 ];
 
@@ -64,7 +67,9 @@ export default function ContactUsPage() {
                     <IconComp size={22} strokeWidth={1.5} />
                   </div>
                   <span className={styles.infoLabel}>{item.label}</span>
-                  <span className={styles.infoValue}>{item.value}</span>
+                  <span className={styles.infoValue}>
+                    {item.href ? <a href={item.href}>{item.value}</a> : item.value}
+                  </span>
                   <span className={styles.infoExtra}>{item.extra}</span>
                 </div>
               );
@@ -80,54 +85,7 @@ export default function ContactUsPage() {
           </div>
 
           <div className={styles.formCard}>
-            <form className={styles.form}>
-              <div className={styles.formRow}>
-                <div className={styles.inputGroup}>
-                  <label className={styles.label}>Full Name</label>
-                  <input
-                    type="text"
-                    placeholder="Enter your full name"
-                    className={styles.input}
-                  />
-                </div>
-                <div className={styles.inputGroup}>
-                  <label className={styles.label}>Email Address</label>
-                  <input
-                    type="email"
-                    placeholder="you@example.com"
-                    className={styles.input}
-                  />
-                </div>
-              </div>
-              <div className={styles.formRow}>
-                <div className={styles.inputGroup}>
-                  <label className={styles.label}>Phone Number</label>
-                  <input
-                    type="tel"
-                    placeholder="+91 XXXXX XXXXX"
-                    className={styles.input}
-                  />
-                </div>
-                <div className={styles.inputGroup}>
-                  <label className={styles.label}>Subject</label>
-                  <input
-                    type="text"
-                    placeholder="Order enquiry, feedback, etc."
-                    className={styles.input}
-                  />
-                </div>
-              </div>
-              <div className={styles.inputGroup}>
-                <label className={styles.label}>Message</label>
-                <textarea
-                  placeholder="Tell us how we can help you…"
-                  className={styles.textarea}
-                />
-              </div>
-              <button type="button" className={styles.submitBtn}>
-                Send Message
-              </button>
-            </form>
+            <ContactForm />
           </div>
         </section>
       </main>
